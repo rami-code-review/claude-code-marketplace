@@ -1,0 +1,15 @@
+{
+  "name": "rami",
+  "version": "2.0.0",
+  "description": "AI-powered code review with Rami",
+  "author": {
+    "name": "shavakan",
+    "email": "cs.changwon.lee@gmail.com"
+  },
+  "commands": [
+    "./commands/review.md",
+    "./commands/status.md",
+    "./commands/usage.md"
+  ],
+  "mcpServers": "./.mcp.json"
+}
