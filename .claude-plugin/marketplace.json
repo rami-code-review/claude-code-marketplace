@@ -1,0 +1,22 @@
+{
+  "name": "rami-code-review",
+  "owner": {
+    "name": "Rami",
+    "email": "support@rami.reviews"
+  },
+  "plugins": [
+    {
+      "name": "rami",
+      "source": ".",
+      "description": "AI-powered code review for your pull requests",
+      "version": "2.0.0",
+      "author": {
+        "name": "Rami"
+      },
+      "homepage": "https://rami.reviews",
+      "repository": "https://github.com/rami-code-review/claude-code-marketplace",
+      "keywords": ["code-review", "ai", "github", "pull-request"],
+      "category": "code-quality"
+    }
+  ]
+}
