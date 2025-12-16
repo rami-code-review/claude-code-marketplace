@@ -14,7 +14,7 @@
         "name": "Rami"
       },
       "homepage": "https://rami.reviews",
-      "repository": "https://github.com/rami-code-review/claude-code-marketplace",
+      "repository": "https://github.com/Rami-Code-Review/claude-code-marketplace",
       "keywords": ["code-review", "ai", "github", "pull-request"],
       "category": "code-quality"
     }

@@ -17,13 +17,13 @@ Rami analyzes your code changes for security vulnerabilities, bugs, performance 
 ### 2. Add the Marketplace
 
 ```
-/plugin marketplace add rami-code-review/claude-code-marketplace
+/plugin marketplace add Rami-Code-Review/claude-code-marketplace
 ```
 
 ### 3. Install the Plugin
 
 ```
-/plugin install rami@rami-code-review
+/plugin install rami@Rami-Code-Review
 ```
 
 ### 4. Run a Review
