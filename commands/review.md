@@ -8,12 +8,19 @@ Fix or rebutt all review issues until clean. Max 5 iterations.
 
 ## Prerequisites Check
 
-1. **Auth Status** (non-blocking)
+1. **MCP Server Available**
+
+   If rami MCP tools are not available, **stop** and display:
    ```
-   Read resource: rami://auth/status
+   Rami MCP server needs authentication.
+
+   To authenticate:
+   1. Run /mcp in Claude Code
+   2. Select "plugin:rami:rami"
+   3. Press Enter to login
+   4. Complete GitHub authentication in browser
+   5. Return here and run /rami:review again
    ```
-   - `authenticated: true` → Proceed
-   - `authenticated: false` → Warn with message from response
 
 2. **PR Detection**
    ```bash
@@ -91,6 +98,6 @@ $ARGUMENTS
 
 | Error | Action |
 |-------|--------|
-| MCP unavailable | "Rami MCP server not responding. Check network or server status." |
-| `status: auth_required` | Display message from response (directs to GitHub App installation) |
+| MCP tools unavailable | Display auth instructions from Prerequisites Check step 1 |
+| `status: auth_required` | Display message from response (GitHub App installation needed) |
 | Rate limited | Wait `interval` seconds from response, retry once, then abort |
