@@ -4,7 +4,7 @@ description: Run full AI code review cycle on current PR branch
 
 # Rami Code Review
 
-Fix or rebutt all review issues until clean. Max 5 iterations.
+Fix or rebut all review issues until clean. Max 5 iterations.
 
 ## Prerequisites Check
 
@@ -58,7 +58,7 @@ $ARGUMENTS
    - `mcp__plugin_rami-code-review_rami__get_fix_prompt(pr_url, issue_index)` → instructions
    - Either:
      - **Fix**: Apply changes using Edit tool
-     - **Rebutt**: `mcp__plugin_rami-code-review_rami__rebutt(pr_url, issue_index, author_reply="<evidence>")`
+     - **Rebut**: `mcp__plugin_rami-code-review_rami__rebut(pr_url, issue_index, author_reply="<evidence>")`
        - `verdict: valid` → Dismissed, next issue
        - `verdict: invalid|partial` → Must fix
 6. `git add -A && git commit -m "fix: address rami review feedback" && git push`
@@ -88,8 +88,8 @@ $ARGUMENTS
 
 ## Constraints
 
-- Rebutt only with evidence: false positive, framework guarantee, intentional design, duplicate
-- Never rebutt to avoid work or for style preferences
+- Rebut only with evidence: false positive, framework guarantee, intentional design, duplicate
+- Never rebut to avoid work or for style preferences
 - Stop if same issue persists 2+ iterations (likely unfixable by AI)
 
 ---
