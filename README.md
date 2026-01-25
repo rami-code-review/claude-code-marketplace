@@ -12,7 +12,7 @@ Rami analyzes your code changes for security vulnerabilities, bugs, performance 
 
 ### 1. Install the GitHub App
 
-[Install Rami](https://github.com/apps/rami-code-review) on your repository to enable code review.
+[Install Rami](https://github.com/apps/rami-code-remeow) on your repository to enable code review.
 
 ### 2. Add the Marketplace
 
@@ -73,7 +73,7 @@ Rami will evaluate your dispute and either accept it or ask you to fix the issue
 Make sure you've pushed your branch and created a pull request.
 
 **"Authentication required"**
-Install the [Rami GitHub App](https://github.com/apps/rami-code-review) on your repository.
+Install the [Rami GitHub App](https://github.com/apps/rami-code-remeow) on your repository.
 
 **Review taking too long?**
 Use `/rami:status` to check progress without triggering a new review.
@@ -81,7 +81,7 @@ Use `/rami:status` to check progress without triggering a new review.
 ## Links
 
 - [Rami Website](https://rami.reviews)
-- [GitHub App](https://github.com/apps/rami-code-review)
+- [GitHub App](https://github.com/apps/rami-code-remeow)
 
 ## License
 
