@@ -9,7 +9,7 @@
       "name": "rami",
       "source": "./",
       "description": "AI-powered code review for your pull requests",
-      "version": "2.0.1",
+      "version": "2.0.2",
       "author": {
         "name": "Rami"
       },
