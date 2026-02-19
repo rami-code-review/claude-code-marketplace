@@ -2,7 +2,7 @@
   "mcpServers": {
     "rami": {
       "type": "http",
-      "url": "https://rami.shavakan.com/mcp"
+      "url": "https://rami.reviews/mcp"
     }
   }
 }
