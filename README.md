@@ -4,7 +4,7 @@
 
 # Rami Code Review
 
-AI-powered code review for your pull requests, integrated directly into Claude Code.
+AI-powered code review for your pull requests, integrated directly into Claude Code and Codex.
 
 Rami analyzes your code changes for security vulnerabilities, bugs, performance issues, and more — then helps you fix them automatically.
 
@@ -16,25 +16,52 @@ Rami analyzes your code changes for security vulnerabilities, bugs, performance 
 
 ### 2. Add the Marketplace
 
+Claude Code:
+
 ```
 /plugin marketplace add rami-code-review/claude-code-marketplace
 ```
 
+Codex:
+
+```
+Install the Rami plugin from this repository's Codex marketplace metadata.
+```
+
 ### 3. Install the Plugin
+
+Claude Code:
 
 ```
 /plugin install rami@rami-code-review
 ```
 
+Codex:
+
+```
+Install the rami plugin from the rami-code-review marketplace.
+```
+
 ### 4. Run a Review
 
-Open a PR branch in Claude Code and run:
+Open a PR branch in Claude Code or Codex and run:
 
 ```
 /rami:review
 ```
 
 Rami will review your changes, show you the issues, and help fix them one by one.
+
+## Codex Support
+
+This repository includes Codex plugin metadata:
+
+- `.codex-plugin/plugin.json`
+- `.agents/plugins/marketplace.json`
+- `skills/rami-code-review/SKILL.md`
+- `.mcp.json`
+
+The Codex plugin exposes the same Rami MCP server used by the Claude plugin and gives Codex sessions the `/rami:review`, `/rami:status`, and `/rami:usage` workflows.
 
 ## Commands
 

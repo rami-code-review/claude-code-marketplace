@@ -1,0 +1,40 @@
+{
+  "name": "rami",
+  "version": "2.1.0",
+  "description": "AI-powered code review for pull requests",
+  "author": {
+    "name": "Rami",
+    "url": "https://rami.reviews"
+  },
+  "homepage": "https://rami.reviews",
+  "repository": "https://github.com/rami-code-review/claude-code-marketplace",
+  "license": "MIT",
+  "keywords": [
+    "rami",
+    "code-review",
+    "ai",
+    "github",
+    "pull-request"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Rami",
+    "shortDescription": "AI-powered PR review",
+    "longDescription": "Run Rami code reviews from Codex sessions, fetch review issues for the current pull request, apply fixes or rebut false positives with evidence, and check review status or usage through the Rami MCP server.",
+    "developerName": "Rami",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://rami.reviews",
+    "defaultPrompt": [
+      "/rami:review",
+      "/rami:status",
+      "/rami:usage"
+    ],
+    "screenshots": [],
+    "brandColor": "#111827"
+  }
+}
