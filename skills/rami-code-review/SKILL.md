@@ -1,11 +1,11 @@
 ---
 name: rami-code-review
-description: Use when the user asks for Rami PR review workflows, including /rami:review, /rami:status, /rami:review-status, or /rami:usage. Requires access to the Rami MCP server.
+description: Run the full Rami review loop on a PR. Invoked by /rami:review and auto-triggered when the user asks for "rami review", "review my PR", "fix all rami issues", or similar. Fetches review results, walks issues by severity, fixes or rebuts each, pushes, and re-evaluates until ready_for_review is true.
 ---
 
-# Rami Code Review
+# Rami Code Review — Loop Algorithm
 
-Use the Rami MCP server for PR review workflows. Do not substitute a manual review unless the MCP server is unavailable and the user explicitly asks for a fallback.
+This skill is the single source of truth for the Rami review-fix-rebut loop. Slash commands (`/rami:review`) delegate here.
 
 ## Rami owns Rami review state
 
@@ -21,33 +21,65 @@ Forbidden GitHub-side actions on Rami threads:
 
 The authoritative done signal is `ready_for_review == true` from `get_review_results`. Trust that field over GitHub's UI state.
 
-## Commands
+## Inputs
 
-### `/rami:review`
+The caller (typically a slash command) provides:
 
-Run the full review loop on the current PR branch.
+- `pr_url` — the PR to review (already validated by the caller's prerequisite check).
 
-1. Verify Rami MCP tools are available.
-2. Get repo and branch:
+If the caller did not supply `pr_url`, run Phase 1 to detect it from the current branch, then continue.
 
-```bash
-git remote get-url origin
-git branch --show-current
-```
+## Phase 1: PR detection (only if not already provided)
 
-3. Call the Rami MCP `get_current_branch_pr` tool with the remote URL and branch.
-4. If no PR is found, stop and report the branch name.
-5. Loop up to 5 iterations:
-   - Call `get_review_results(pr_url)`.
-   - Stop when `ready_for_review` is `true`. Do not stop on `issue_count == 0` alone — that field counts only new findings in the current pass; `pending_history_count` (carryover) and `github_unresolved_count` (bot + human threads) can still block readiness.
-   - Handle issues in priority order: Blocking, High, Medium, Low. Include both `issues` and `pending_history_issues`.
-   - For each issue, call `get_fix_prompt(pr_url, issue_index)`.
-   - Fix the issue with normal file edits, or call `rebut(pr_url, issue_index, author_reply)` only with evidence: false positive, framework guarantee, intentional design, or duplicate.
-   - If `rebut` returns `invalid` or `partial`, push a code fix that addresses Rami's specific concern, or stop and ask the user. Do not reply via the GitHub review thread, do not click "Resolve conversation", and do not edit Rami's comment — Rami does not ingest those actions, and the thread will keep blocking `ready_for_review`.
-   - Stop if the same issue persists for 2 iterations.
-6. After fixes, follow the repository's normal commit and push policy. Do not commit or push unless the user requested that workflow and local project gates pass.
+1. Get the remote URL and current branch:
+   ```bash
+   git remote get-url origin
+   git branch --show-current
+   ```
+2. Call `mcp__plugin_rami-code-review_rami__get_current_branch_pr(remote_url, branch)`.
 
-Report:
+   | Result | Action |
+   |--------|--------|
+   | `status: success` | Use `pr_url`, proceed to Phase 2 |
+   | `status: not_found` | Stop. Report: "No PR found for branch `<branch>`" |
+   | Any error | Stop. Report the error. |
+
+## Phase 2: Review loop
+
+**Initialize:**
+
+- `iteration = 0`
+- `max_iterations = 5`
+- `history = []`
+
+**Loop:**
+
+1. `iteration++`
+2. Call `mcp__plugin_rami-code-review_rami__get_review_results(pr_url)`.
+3. **Exit condition.** Stop the loop when `ready_for_review == true` OR `iteration > max_iterations`.
+   - `ready_for_review` is true only when `blocking_issue_count == 0` AND `pending_history_count == 0` AND `github_unresolved_count == 0`.
+   - Do **not** exit on `issue_count == 0` alone. New-pass `issue_count` ignores carryover findings tracked in `pending_history_count` and human/bot threads in `github_unresolved_count`. A PR can have `issue_count: 0` and still be unmergeable.
+4. Record: `history.push({iteration, issues, pending_history_count, github_unresolved_count})`.
+5. **Triage each issue.** Walk issues in priority order — Blocking → High → Medium → Low — and include `pending_history_issues` (carryover from previous passes), not just the new-pass `issues`.
+
+   For each issue, decide between **Fix** and **Rebut**:
+
+   - **Fix.** Call `mcp__plugin_rami-code-review_rami__get_fix_prompt(pr_url, issue_index)` for instructions, then apply the change with the Edit tool.
+   - **Rebut.** Only when you have one of the four valid reasons: false positive, framework guarantee, intentional design, duplicate. Call `mcp__plugin_rami-code-review_rami__rebut(pr_url, issue_index, author_reply="<one paragraph: reason + evidence>")`.
+     - `verdict: valid` → finding dismissed by Rami; move on.
+     - `verdict: invalid` or `partial` → **must fix.** Push a code change that addresses Rami's specific concern, or stop and ask the user. Do **not** fall back to a plain GitHub thread reply or click "Resolve conversation"; Rami doesn't ingest those, so the thread will keep blocking `ready_for_review`.
+
+   See the `rami-rebut-finding` skill for the full rebuttal protocol.
+
+6. **Push.** After triaging the iteration's issues:
+   ```bash
+   git add -A && git commit -m "fix: address rami review feedback" && git push
+   ```
+7. Continue the loop (back to step 1).
+
+## Phase 3: Report
+
+When the loop exits, summarize:
 
 ```text
 ## Rami Review Summary
@@ -60,28 +92,22 @@ Per-iteration:
 - Iteration N: found X, fixed Y, rebutted Z, remaining R
 
 Rebuttals:
-- Issue #N: [verdict] evidence summary
+- Issue #N: [verdict] one-line evidence summary
 ```
 
-### `/rami:status` or `/rami:review-status`
+## Constraints
 
-Check status without triggering a new review.
+- Rebut only with evidence: false positive, framework guarantee, intentional design, duplicate.
+- Never rebut to avoid work or for style preferences.
+- Stop if the same issue persists across 2+ iterations (likely unfixable by AI; ask the user).
+- Follow the host project's commit and push policy. If commits/pushes are gated by additional project rules (pre-commit hooks, branch protections, manual review), respect them — do not bypass.
 
-1. Verify Rami MCP tools are available.
-2. Get the current branch PR with `get_current_branch_pr`.
-3. Call `get_review_status(pr_url)`.
-4. Report pending, completed issue count and summary, not found, or error.
+## Failure modes
 
-### `/rami:usage`
-
-Call the Rami MCP `get_usage` tool and report remaining reviews, credit balance if present, plan tier, and reset date.
-
-## MCP Unavailable
-
-If Rami MCP tools are unavailable, stop and display:
-
-```text
-Rami MCP server is not available in this session.
-
-Install or authenticate the Rami plugin for this client, then rerun the command. The plugin should expose the Rami MCP server at https://rami.reviews/mcp.
-```
+| Symptom | Likely cause | What to do |
+|---------|--------------|------------|
+| Rami MCP tools not available | Plugin not authenticated | Stop. Tell the user to authenticate via `/mcp` (Claude Code) or the equivalent for their client. |
+| `status: auth_required` from any tool | OAuth not completed for this user | Stop. Report the auth message. |
+| `status: not_found` from `get_current_branch_pr` | No PR exists for this branch | Stop. Report the branch name. |
+| Same issue persists 2+ iterations | AI cannot fix it; might be a real false positive Rami won't accept | Stop. Surface the issue and ask the user. |
+| Rate limited | Quota exceeded | Wait `interval` seconds from the response, retry once, then abort. |
