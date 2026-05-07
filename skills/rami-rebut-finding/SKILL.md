@@ -5,7 +5,7 @@ description: Use when the user wants to challenge, rebut, or dispute a Rami code
 
 # Rami Rebut Finding
 
-Use the Rami MCP `rebut` tool to challenge a finding. This is the only sanctioned channel for disagreement — replies via the GitHub review thread or clicks on "Resolve conversation" do not flow into Rami's state machine.
+Use the Rami MCP `rebut` tool to challenge a finding. This is the only sanctioned channel for disagreement. Nothing posted to the GitHub review thread itself — whether via the web UI, the REST/GraphQL API, the `gh` CLI, or any GitHub MCP server — flows into Rami's state machine.
 
 ## Decide first: rebut, fix, defer, or dismiss
 
@@ -43,26 +43,26 @@ If your reason doesn't fit one of these, you don't have a rebuttal — fix the i
 
 3. Read the verdict:
    - `valid` — finding dismissed, thread closed by Rami. Move to the next issue.
-   - `partial` — Rami partially agrees but still believes part of the finding stands. Push a code fix that addresses the remaining concern, or escalate to the user. Do NOT reply via the GitHub thread.
-   - `invalid` — Rami stands by the finding. Either push a code fix that addresses Rami's specific concern, or stop and ask the user. Do NOT reply via the GitHub thread.
+   - `partial` — Rami partially agrees but still believes part of the finding stands. Push a code fix that addresses the remaining concern, or escalate to the user. Do NOT reply or resolve via GitHub UI, `gh`, or any GitHub MCP.
+   - `invalid` — Rami stands by the finding. Either push a code fix that addresses Rami's specific concern, or stop and ask the user. Do NOT reply or resolve via GitHub UI, `gh`, or any GitHub MCP.
 
 ## Forbidden actions when a rebuttal fails
 
-If Rami returns `partial` or `invalid`, **do not** attempt to work around it via GitHub UI. None of the following actions change Rami's state:
+If Rami returns `partial` or `invalid`, **do not** attempt to work around it via any GitHub-side channel. None of the following change Rami's state, regardless of whether they are issued through the web UI, the REST/GraphQL API, the `gh` CLI, or a GitHub MCP server:
 
-- Posting a plain reply to the GitHub review thread (web UI reply box, or `POST /pulls/:n/comments` with `in_reply_to`).
-- Clicking "Resolve conversation" on the thread.
-- Editing, deleting, or hiding the Rami review comment.
+- Posting a plain reply to the GitHub review thread (web UI reply box, `POST /pulls/:n/comments` with `in_reply_to`, `gh pr review` / `gh api`, or a GitHub MCP `add_pull_request_review_comment_reply` tool).
+- Clicking "Resolve conversation" on the thread, or the equivalent `gh api` / GraphQL `resolveReviewThread` / GitHub MCP call.
+- Editing, deleting, or hiding the Rami review comment by any means.
 - Dismissing the Rami review on GitHub.
 - Approving and merging while `ready_for_review` is `false`.
 
-A thread that looks resolved on GitHub but is `invalid` to Rami will keep blocking `ready_for_review` and any merge gate that consults it.
+A thread that looks resolved on GitHub — by any of those channels — but is `invalid` to Rami will keep blocking `ready_for_review` and any merge gate that consults it. **Do not reach for `gh` or a GitHub MCP as a shortcut around Rami's state machine.**
 
 ## Escalation
 
 If you have rebutted the same finding twice with different evidence and Rami still returns `invalid`, stop and ask the user. The user decides whether the finding is genuinely wrong (in which case they may use `dismiss`) or whether your evidence is missing something.
 
-Never escalate by editing, hiding, or merging around a Rami thread.
+Never escalate by editing, hiding, or merging around a Rami thread — and do not invoke `gh` or any GitHub MCP server to do it for you.
 
 ## Reporting back
 

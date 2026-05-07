@@ -9,17 +9,19 @@ This skill is the single source of truth for the Rami review-fix-rebut loop. Sla
 
 ## Rami owns Rami review state
 
-Every Rami review thread is part of Rami's state machine. Resolution must come through Rami's MCP tools (`rebut`, `defer`, `dismiss`) — never through the GitHub UI.
+Every Rami review thread is part of Rami's state machine. Resolution must come through Rami's MCP tools (`rebut`, `defer`, `dismiss`) — never through any other GitHub channel.
 
-Forbidden GitHub-side actions on Rami threads:
+Forbidden GitHub-side actions on Rami threads — across **all channels** (GitHub web UI, REST/GraphQL API, `gh` CLI, and any GitHub MCP server tool):
 
-- Clicking "Resolve conversation" on a Rami thread.
-- Replying to a Rami thread via the GitHub review-thread reply box (or the equivalent REST API).
-- Editing, deleting, or hiding a Rami review comment.
+- Clicking "Resolve conversation" on a Rami thread, or the equivalent `gh api` / GraphQL `resolveReviewThread` / GitHub MCP call.
+- Replying to a Rami thread via the GitHub review-thread reply box, the REST API (`POST /pulls/:n/comments` with `in_reply_to`), `gh pr review` / `gh api`, or a GitHub MCP `add_pull_request_review_comment_reply` tool.
+- Editing, deleting, or hiding a Rami review comment by any means.
 - Dismissing the Rami review on the PR.
 - Approving and merging while `ready_for_review` is `false`.
 
-The authoritative done signal is `ready_for_review == true` from `get_review_results`. Trust that field over GitHub's UI state.
+Rami does not ingest signals from these channels. A thread that looks resolved or replied-to via `gh` or a GitHub MCP will still block `ready_for_review`, and the loop will keep reporting it as outstanding. **Do not invoke `gh` or GitHub MCP tools against Rami threads during the loop.** They are fine for unrelated PR work (reading diffs, opening PRs, checking CI), but never for resolving, replying to, or dismissing Rami findings.
+
+The authoritative done signal is `ready_for_review == true` from `get_review_results`. Trust that field over what GitHub's UI, `gh`, or any GitHub MCP reports about thread state.
 
 ## Inputs
 
@@ -67,7 +69,7 @@ If the caller did not supply `pr_url`, run Phase 1 to detect it from the current
    - **Fix.** Call `mcp__plugin_rami-code-review_rami__get_fix_prompt(pr_url, issue_index)` for instructions, then apply the change with the Edit tool.
    - **Rebut.** Only when you have one of the four valid reasons: false positive, framework guarantee, intentional design, duplicate. Call `mcp__plugin_rami-code-review_rami__rebut(pr_url, issue_index, author_reply="<one paragraph: reason + evidence>")`.
      - `verdict: valid` → finding dismissed by Rami; move on.
-     - `verdict: invalid` or `partial` → **must fix.** Push a code change that addresses Rami's specific concern, or stop and ask the user. Do **not** fall back to a plain GitHub thread reply or click "Resolve conversation"; Rami doesn't ingest those, so the thread will keep blocking `ready_for_review`.
+     - `verdict: invalid` or `partial` → **must fix.** Push a code change that addresses Rami's specific concern, or stop and ask the user. Do **not** fall back to a GitHub thread reply, "Resolve conversation" click, `gh` command, or GitHub MCP call — Rami doesn't ingest any of those, so the thread will keep blocking `ready_for_review`.
 
    See the `rami-rebut-finding` skill for the full rebuttal protocol.
 
