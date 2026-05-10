@@ -8,13 +8,14 @@
     {
       "name": "rami",
       "source": "./",
-      "description": "AI-powered code review for your pull requests",
+      "description": "AI code review for Claude Code and Codex. Reviews every PR, fixes issues via MCP, you decide what merges.",
       "author": {
-        "name": "Rami"
+        "name": "Rami",
+        "email": "support@rami.reviews"
       },
       "homepage": "https://rami.reviews",
       "repository": "https://github.com/rami-code-review/claude-code-marketplace",
-      "keywords": ["code-review", "ai", "github", "pull-request"],
+      "keywords": ["code-review", "ai", "github", "pull-request", "claude-code", "codex", "cursor", "mcp", "autofix"],
       "category": "code-quality"
     }
   ]

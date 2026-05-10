@@ -1,11 +1,14 @@
 {
   "name": "rami",
   "version": "2.2.1",
-  "description": "AI-powered code review with Rami",
+  "description": "AI code review for Claude Code and Codex. Reviews every PR, fixes issues via MCP, you decide what merges.",
   "author": {
-    "name": "shavakan",
-    "email": "cs.changwon.lee@gmail.com"
+    "name": "Rami",
+    "email": "support@rami.reviews"
   },
+  "homepage": "https://rami.reviews",
+  "repository": "https://github.com/rami-code-review/claude-code-marketplace",
+  "keywords": ["code-review", "ai", "github", "pull-request", "claude-code", "codex", "cursor", "mcp", "autofix"],
   "commands": [
     "./commands/review.md",
     "./commands/review-status.md",

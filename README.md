@@ -4,17 +4,30 @@
 
 # Rami Code Review
 
-AI-powered code review for your pull requests, integrated directly into Claude Code and Codex.
+**Works with Claude Code AND Codex.** Rami reviews every PR for security, bugs, and performance — then fixes the findings through MCP. You stay in control of what merges.
 
-Rami analyzes your code changes for security vulnerabilities, bugs, performance issues, and more — then helps you fix them automatically.
+<p align="center">
+  <img src="https://rami.reviews/static/images/rami_pr_check.png" alt="Rami PR check" width="720">
+</p>
+
+## Disputing Findings
+
+Not every finding needs a fix. Push back when you have evidence — Rami evaluates the dispute and either accepts it or asks you to fix:
+
+- **False positive** — the code is actually correct
+- **Framework guarantee** — the framework handles this case
+- **Intentional design** — this is by design, not a mistake
+- **Duplicate** — the same issue is reported elsewhere
+
+The dispute loop runs in the same session as the review, so accepted disputes drop out and only real issues land in your commits.
 
 ## Getting Started
 
 ### 1. Install the GitHub App
 
-[Install Rami](https://github.com/apps/rami-code-remeow) on your repository to enable code review.
+[Install Rami](https://github.com/apps/rami-code-remeow) on your repository.
 
-### 2. Add the Marketplace
+### 2. Add the marketplace
 
 Claude Code:
 
@@ -28,7 +41,7 @@ Codex:
 Install the Rami plugin from this repository's Codex marketplace metadata.
 ```
 
-### 3. Install the Plugin
+### 3. Install the plugin
 
 Claude Code:
 
@@ -42,72 +55,47 @@ Codex:
 Install the rami plugin from the rami-code-review marketplace.
 ```
 
-### 4. Run a Review
+### 4. Run a review
 
-Open a PR branch in Claude Code or Codex and run:
+On a PR branch, run:
 
 ```
 /rami:review
 ```
 
-Rami will review your changes, show you the issues, and help fix them one by one.
-
-## Codex Support
-
-This repository includes Codex plugin metadata:
-
-- `.codex-plugin/plugin.json`
-- `.agents/plugins/marketplace.json`
-- `skills/rami-code-review/SKILL.md`
-- `.mcp.json`
-
-The Codex plugin exposes the same Rami MCP server used by the Claude plugin and gives Codex sessions the `/rami:review`, `/rami:status`, and `/rami:usage` workflows.
+Rami fetches the review, walks each finding by priority, and applies fixes (or accepts disputes) until the PR is clean.
 
 ## Commands
 
 ### `/rami:review`
 
-Runs a full review cycle on your current PR branch. Rami will:
+Full review-fix-dispute loop on the current PR branch:
 
-- Fetch review results for your PR
-- Walk through each issue by priority (blocking → high → medium → low)
-- Either fix the issue or let you dispute it with evidence
-- Commit and push the fixes
-- Repeat until the review is clean (up to 5 iterations)
+- Fetches review results
+- Walks findings by priority (blocking → high → medium → low)
+- Fixes each one — or lets you dispute with evidence
+- Commits and pushes
+- Repeats until clean (up to 5 iterations)
 
-### `/rami:status`
+### `/rami:review-status`
 
-Quick check on your review status without triggering a new review. Useful when you want to see if a previous review has completed.
+Check review status without triggering a new review.
 
 ### `/rami:usage`
 
-Check your remaining review quota and credit balance.
-
-## Disputing Issues
-
-Not every issue Rami finds needs to be fixed. You can dispute issues with evidence:
-
-- **False positive** — The code is actually correct
-- **Framework guarantee** — The framework handles this case
-- **Intentional design** — This is by design, not a mistake
-- **Duplicate** — Same issue reported elsewhere
-
-Rami will evaluate your dispute and either accept it or ask you to fix the issue.
+Check remaining quota and credit balance.
 
 ## Troubleshooting
 
-**"No PR found for branch"**
-Make sure you've pushed your branch and created a pull request.
+**"No PR found for branch"** — push the branch and open a pull request.
 
-**"Authentication required"**
-Install the [Rami GitHub App](https://github.com/apps/rami-code-remeow) on your repository.
+**"Authentication required"** — install the [Rami GitHub App](https://github.com/apps/rami-code-remeow) on the repo.
 
-**Review taking too long?**
-Use `/rami:status` to check progress without triggering a new review.
+**Review taking too long?** — `/rami:review-status` checks progress without triggering a new review.
 
 ## Links
 
-- [Rami Website](https://rami.reviews)
+- [Rami](https://rami.reviews)
 - [GitHub App](https://github.com/apps/rami-code-remeow)
 
 ## License

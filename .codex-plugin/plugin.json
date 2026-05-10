@@ -1,9 +1,10 @@
 {
   "name": "rami",
   "version": "2.2.1",
-  "description": "AI-powered code review for pull requests",
+  "description": "AI code review for Claude Code and Codex. Reviews every PR, fixes issues via MCP, you decide what merges.",
   "author": {
     "name": "Rami",
+    "email": "support@rami.reviews",
     "url": "https://rami.reviews"
   },
   "homepage": "https://rami.reviews",
@@ -14,14 +15,19 @@
     "code-review",
     "ai",
     "github",
-    "pull-request"
+    "pull-request",
+    "claude-code",
+    "codex",
+    "cursor",
+    "mcp",
+    "autofix"
   ],
   "skills": "./skills/",
   "mcpServers": "./.mcp.json",
   "interface": {
     "displayName": "Rami",
-    "shortDescription": "AI-powered PR review",
-    "longDescription": "Run Rami code reviews from Codex sessions, fetch review issues for the current pull request, apply fixes or rebut false positives with evidence, and check review status or usage through the Rami MCP server.",
+    "shortDescription": "AI code review for Claude Code and Codex",
+    "longDescription": "AI code review for Claude Code and Codex. Rami reviews every PR for security, bugs, and performance, then fixes the findings through MCP — or accepts your dispute when the finding is wrong. Trigger reviews with /rami:review, check status with /rami:review-status, and manage usage with /rami:usage.",
     "developerName": "Rami",
     "category": "Coding",
     "capabilities": [
@@ -31,7 +37,7 @@
     "websiteURL": "https://rami.reviews",
     "defaultPrompt": [
       "/rami:review",
-      "/rami:status",
+      "/rami:review-status",
       "/rami:usage"
     ],
     "screenshots": [],
