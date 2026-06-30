@@ -1,6 +1,6 @@
 {
   "name": "rami",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "description": "AI code review for Claude Code and Codex. Reviews every PR, fixes issues via MCP, you decide what merges.",
   "author": {
     "name": "Rami",
@@ -12,7 +12,11 @@
   "commands": [
     "./commands/review.md",
     "./commands/review-status.md",
-    "./commands/usage.md"
+    "./commands/usage.md",
+    "./commands/setup.md",
+    "./commands/doctor.md",
+    "./commands/upgrade.md"
   ],
+  "hooks": "./hooks/hooks.json",
   "mcpServers": "./.mcp.json"
 }

@@ -18,7 +18,7 @@ To authenticate:
 2. Select "plugin:rami:rami"
 3. Press Enter to login
 4. Complete GitHub authentication in browser
-5. Return here and run /rami:status again
+5. Return here and run /rami:review-status again
 ```
 
 ## Execution
