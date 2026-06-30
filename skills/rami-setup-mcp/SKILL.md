@@ -34,7 +34,7 @@ claude plugin marketplace add rami-code-review/claude-code-marketplace
 claude plugin install rami@rami-code-review
 ```
 
-This installs the MCP server, the slash commands (`/rami:review`, `/rami:status`, `/rami:usage`), and handles OAuth.
+This installs the MCP server, the slash commands (`/rami:review`, `/rami:review-status`, `/rami:usage`, `/rami:setup`, `/rami:doctor`, `/rami:upgrade`), and handles OAuth.
 
 ### Claude Code (direct MCP, no plugin)
 
@@ -58,7 +58,7 @@ Add to `.cursor/mcp.json` in the project root:
 
 ### Codex CLI
 
-Install the Rami plugin from this marketplace's Codex metadata. The Codex plugin exposes the same MCP server as the Claude plugin and gives Codex sessions the same `/rami:review`, `/rami:status`, and `/rami:usage` workflows.
+Install the Rami plugin from this marketplace's Codex metadata. The Codex plugin exposes the same MCP server as the Claude plugin and gives Codex sessions the same `/rami:review`, `/rami:review-status`, `/rami:usage`, `/rami:setup`, `/rami:doctor`, and `/rami:upgrade` workflows.
 
 ### Other MCP clients
 
@@ -119,7 +119,7 @@ Once these three steps are done, the user has access to:
 
 - **Automatic reviews on push** — the GitHub App posts inline review comments on every PR.
 - **The autofix loop via MCP** — agents call `get_review_results` after every push, fix or rebut findings via `get_fix_prompt` / `rebut`, and re-run until `ready_for_review: true`.
-- **Slash commands** (Claude Code / Codex with plugin) — `/rami:review`, `/rami:status`, `/rami:usage`.
+- **Slash commands** (Claude Code / Codex with plugin) — `/rami:review`, `/rami:review-status`, `/rami:usage`, `/rami:setup`, `/rami:doctor`, `/rami:upgrade`.
 - **Web console** — usage and credit balance at https://rami.reviews.
 
 ## Troubleshooting

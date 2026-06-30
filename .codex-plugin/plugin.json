@@ -1,6 +1,6 @@
 {
   "name": "rami",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "description": "AI code review for Claude Code and Codex. Reviews every PR, fixes issues via MCP, you decide what merges.",
   "author": {
     "name": "Rami",
@@ -38,7 +38,10 @@
     "defaultPrompt": [
       "/rami:review",
       "/rami:review-status",
-      "/rami:usage"
+      "/rami:usage",
+      "/rami:setup",
+      "/rami:doctor",
+      "/rami:upgrade"
     ],
     "screenshots": [],
     "brandColor": "#111827"

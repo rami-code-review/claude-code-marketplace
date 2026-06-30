@@ -85,6 +85,18 @@ Check review status without triggering a new review.
 
 Check remaining quota and credit balance.
 
+### `/rami:setup`
+
+Guided setup — installs the GitHub App, registers the MCP server, completes OAuth, and verifies the connection. Run this first if Rami isn't connected yet.
+
+### `/rami:doctor`
+
+Read-only health check. Reports auth, GitHub App coverage, quota, and whether the plugin is up to date — with the fix for anything that's off.
+
+### `/rami:upgrade`
+
+Updates the plugin to the latest published version and shows what changed.
+
 ## Troubleshooting
 
 **"No PR found for branch"** — push the branch and open a pull request.
@@ -92,6 +104,23 @@ Check remaining quota and credit balance.
 **"Authentication required"** — install the [Rami GitHub App](https://github.com/apps/rami-code-remeow) on the repo.
 
 **Review taking too long?** — `/rami:review-status` checks progress without triggering a new review.
+
+## Keeping Rami up to date
+
+Rami checks once a day — silently — whether a newer plugin version is published, and nudges you when one is. To update at any time:
+
+```
+/rami:upgrade
+```
+
+Or manually:
+
+```
+claude plugin marketplace update rami-code-review
+claude plugin update rami@rami-code-review
+```
+
+Then run `/reload-plugins` (or start a new session) to activate it.
 
 ## Links
 
