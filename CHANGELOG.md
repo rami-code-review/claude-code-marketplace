@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `/rami:doctor` — read-only health check that probes authentication, GitHub App coverage, quota, and plugin version, then prints a checklist with the fix for each issue.
 - `/rami:upgrade` — updates the plugin to the latest published version and shows what changed.
 - SessionStart update nudge — a throttled (once/day), network-safe hook that surfaces a notification when the installed plugin is behind the latest version. Silent when up to date.
+- Optional, consent-gated project-instructions addendum: `/rami:setup` can add a fenced, removable Rami section (the review-thread state-ownership rule) to the repo's `CLAUDE.md`/`AGENTS.md` — only when the user agrees.
 - `CHANGELOG.md`.
 
 ### Fixed

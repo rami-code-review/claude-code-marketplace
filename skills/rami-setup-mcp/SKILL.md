@@ -113,6 +113,36 @@ mcp__plugin_rami-code-review_rami__get_review_results(pr_url=<from above>)
 
 If `get_review_results` blocks for a while and then returns `status: completed`, Rami is fully set up and the autofix loop is available.
 
+## Step 6: Extend project instructions (optional — ask first)
+
+Most of Rami's workflow lives in skills that auto-trigger ("review my PR"), so it does **not** belong in always-on project instructions. There is one exception worth persisting: the **state-ownership rule**, so an agent working on an unrelated task never resolves a Rami thread the wrong way (via the GitHub UI or `gh`, which Rami doesn't ingest).
+
+**Only do this with explicit consent.** Ask:
+
+> Add a short Rami section to this repo's project instructions (`CLAUDE.md` / `AGENTS.md`)? It's one fenced block, easy to remove.
+
+If the user declines, skip this — it is not required for Rami to work.
+
+If they agree:
+
+1. **Pick the target file** in the repo root: `CLAUDE.md` for Claude Code, `AGENTS.md` for Codex/other agents. If both exist, ask which (or do both). If neither exists, ask before creating one.
+2. **Idempotency:** if a `<!-- rami:begin` … `rami:end -->` block already exists, replace its contents in place — never append a second copy.
+3. **Append (or update in place) exactly this block, and nothing else:**
+
+   ```markdown
+   <!-- rami:begin (managed by /rami:setup) -->
+   ## Rami code review
+   - Use `/rami:review` to review the current PR; it is ready only when `ready_for_review` is true.
+   - Rami owns its review threads. Resolve findings ONLY via Rami's MCP tools (rebut/defer/dismiss).
+     Never resolve, reply to, or close a Rami thread via the GitHub UI, `gh`, or GitHub MCP — Rami
+     does not ingest those actions and the thread keeps blocking `ready_for_review`.
+   <!-- rami:end -->
+   ```
+
+4. **Confirm** what changed and note the block is fenced for easy removal.
+
+**To remove it later:** delete everything from `<!-- rami:begin` through `rami:end -->` (inclusive) and leave the rest of the file untouched. If the user asks to remove the Rami section, do exactly that.
+
 ## What "set up" means downstream
 
 Once these three steps are done, the user has access to:
