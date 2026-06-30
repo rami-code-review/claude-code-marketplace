@@ -87,7 +87,7 @@ Check remaining quota and credit balance.
 
 ### `/rami:setup`
 
-Guided setup — installs the GitHub App, registers the MCP server, completes OAuth, and verifies the connection. Run this first if Rami isn't connected yet.
+Guided setup — installs the GitHub App, registers the MCP server, completes OAuth, and verifies the connection. Run this first if Rami isn't connected yet. It can also offer, only if you agree, to add a short removable Rami section to your `CLAUDE.md` / `AGENTS.md`.
 
 ### `/rami:doctor`
 
