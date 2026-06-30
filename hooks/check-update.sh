@@ -29,7 +29,7 @@ fi
 installed="$(extract_version < "$local_json")"
 valid_version "$installed" || { log "installed version invalid: '${installed}'"; exit 0; }
 
-latest="$(curl -fsS --max-time 4 "$LATEST_URL" 2>/dev/null | extract_version)"
+latest="$(curl -fsS --max-time 4 --proto '=https' --tlsv1.2 "$LATEST_URL" 2>/dev/null | extract_version)"
 valid_version "$latest" || { log "latest fetch/parse failed (curl error, 4xx/5xx, or non-version): '${latest}'"; exit 0; }
 
 newer="$(awk -v a="$installed" -v b="$latest" '
