@@ -88,9 +88,7 @@ For Cursor, Codex, and others, the client typically opens an OAuth window the fi
 
 Run a cheap, side-effect-free call to confirm everything is wired up:
 
-```
-mcp__plugin_rami-code-review_rami__get_usage()
-```
+Call `get_usage()` on the Rami MCP server.
 
 A successful response includes `remaining_reviews`, `quota_limit`, `credit_balance`, and a dashboard URL. If you see `auth_required`, OAuth didn't complete — go back to Step 3. If the call returns successfully but says you have zero reviews, the user may need to upgrade plans, but the wiring is fine.
 
@@ -104,11 +102,11 @@ This returns auth state without consuming any quota.
 
 ## Step 5: First Review (optional)
 
-If the user has an open PR on a repo where the GitHub App is installed, run:
+If the user has an open PR on a repo where the GitHub App is installed, call on the Rami MCP server:
 
 ```
-mcp__plugin_rami-code-review_rami__get_current_branch_pr(remote_url=$REMOTE, branch=$BRANCH)
-mcp__plugin_rami-code-review_rami__get_review_results(pr_url=<from above>)
+get_current_branch_pr(remote_url=$REMOTE, branch=$BRANCH)
+get_review_results(pr_url=<from above>)
 ```
 
 If `get_review_results` blocks for a while and then returns `status: completed`, Rami is fully set up and the autofix loop is available.

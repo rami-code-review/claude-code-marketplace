@@ -1,6 +1,6 @@
 {
   "name": "rami",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "AI code review for Claude Code and Codex. Reviews every PR, fixes issues via MCP, you decide what merges.",
   "author": {
     "name": "Rami",

@@ -1,6 +1,7 @@
 ---
 name: rami-upgrade
 description: Use when the user wants to update or upgrade the Rami plugin — "upgrade rami", "update the rami plugin", "get the latest rami", or after the SessionStart nudge reports a new version. Compares installed vs latest, shows the changelog, runs the marketplace update, and explains how to activate it.
+model: haiku
 ---
 
 # Upgrade Rami

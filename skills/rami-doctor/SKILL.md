@@ -1,6 +1,7 @@
 ---
 name: rami-doctor
 description: Use when the user wants to diagnose, verify, or health-check a Rami install — "is Rami set up", "rami doctor", "check my rami install", "why isn't rami working". Runs read-only probes (MCP auth, GitHub App coverage, quota, plugin version) and prints a ✓/✗ checklist with the fix for each failure.
+model: haiku
 ---
 
 # Rami Doctor
@@ -13,7 +14,7 @@ A failure in an early check (no MCP, no auth) makes later checks meaningless —
 
 ### 1. MCP server connected
 
-Are the `mcp__plugin_rami-code-review_rami__*` tools available?
+Are the Rami MCP server's tools (`get_usage`, `get_current_branch_pr`, `get_review_results`, …) available?
 
 - Available → ✓
 - Not available → ✗ **MCP server not connected.** Fix: `/rami:setup`, then `/mcp` → authenticate.
@@ -35,9 +36,7 @@ This resource costs no quota.
 REMOTE=$(git remote get-url origin)
 BRANCH=$(git branch --show-current)
 ```
-```
-mcp__plugin_rami-code-review_rami__get_current_branch_pr(remote_url=$REMOTE, branch=$BRANCH)
-```
+Call `get_current_branch_pr(remote_url=$REMOTE, branch=$BRANCH)` on the Rami MCP server.
 
 - `status: success` → ✓ (App installed; PR `pr_url` found)
 - `status: auth_required` → ✗ **GitHub App not installed on this repo.** Fix: install it at https://github.com/apps/rami-code-remeow and scope it to this repo.
@@ -45,9 +44,7 @@ mcp__plugin_rami-code-review_rami__get_current_branch_pr(remote_url=$REMOTE, bra
 
 ### 4. Quota
 
-```
-mcp__plugin_rami-code-review_rami__get_usage()
-```
+Call `get_usage()` on the Rami MCP server.
 
 - `can_execute_review: true` → ✓ (plan `plan`, `quota_remaining` left, `credit_balance` credits)
 - `can_execute_review: false` → ⚠ **Out of quota/credits.** Fix: see `dashboard_url`.

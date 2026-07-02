@@ -1,5 +1,6 @@
 ---
 description: Check Rami review status without triggering new review
+model: haiku
 ---
 
 # Rami Status Check
@@ -28,14 +29,9 @@ To authenticate:
    REMOTE=$(git remote get-url origin)
    BRANCH=$(git branch --show-current)
    ```
-   ```
-   mcp__plugin_rami-code-review_rami__get_current_branch_pr(remote_url=$REMOTE, branch=$BRANCH)
-   ```
+   Then call `get_current_branch_pr(remote_url=$REMOTE, branch=$BRANCH)` on the Rami MCP server.
 
-2. **Check status.**
-   ```
-   mcp__plugin_rami-code-review_rami__get_review_status(pr_url)
-   ```
+2. **Check status.** Call `get_review_status(pr_url)` on the Rami MCP server.
 
 3. **Report.** Use `ready_for_review` as the authoritative done signal — not `issue_count == 0`.
 
