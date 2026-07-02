@@ -4,6 +4,19 @@ All notable changes to the Rami plugin are documented here. The version is the `
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.4.0]
+
+### Added
+
+- The `rami-code-review` skill runs in a forked subagent on Claude Code (`context: fork`): review payloads and fix prompts no longer accumulate in the main conversation — only the final report returns. Clients that don't support forking (Codex, Cursor) run it inline as before.
+- "Files changed" list in the review summary, since the loop's edits are no longer visible live in a forked run.
+- "Needs user decision" report section replaces mid-loop questions: the run returns the blocker and options, the caller relays it, and the skill accepts the answer as a `user_decision` input on re-invocation.
+- Model routing: `/rami:review-status`, `/rami:usage`, and the doctor and upgrade skills declare `model: haiku` — the review loop and setup keep the session model.
+
+### Fixed
+
+- Stale `mcp__plugin_rami-code-review_rami__*` tool references (from the pre-rename plugin id) replaced with client-neutral bare tool names plus server attribution across all commands and skills. The fully-qualified prefix differs per install path (marketplace plugin, direct `claude mcp add`, Codex), so hardcoding any one of them misfires for the others.
+
 ## [2.3.0]
 
 ### Added

@@ -31,9 +31,9 @@ If your reason doesn't fit one of these, you don't have a rebuttal — fix the i
 ## How to rebut
 
 1. Get the finding's `content_hash` (preferred) or `comment_id` from the most recent `get_review_results(pr_url)` response.
-2. Call:
+2. Call `rebut` on the Rami MCP server:
    ```
-   mcp__plugin_rami-code-review_rami__rebut(
+   rebut(
      pr_url="<pr_url>",
      content_hash="<hash from get_review_results>",
      author_reply="<one paragraph: which of the four reasons + the specific evidence>"

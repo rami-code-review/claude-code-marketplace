@@ -1,5 +1,6 @@
 ---
 description: Check Rami quota and credit balance
+model: haiku
 ---
 
 # Rami Usage Check
@@ -22,9 +23,7 @@ To authenticate:
 
 ## Execution
 
-```
-mcp__plugin_rami-code-review_rami__get_usage()
-```
+Call `get_usage()` on the Rami MCP server.
 
 ## Report
 
