@@ -4,6 +4,12 @@ All notable changes to the Rami plugin are documented here. The version is the `
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.4.2]
+
+### Fixed
+
+- Plugin no longer fails to load with "Duplicate hooks file detected". `plugin.json` explicitly referenced `./hooks/hooks.json`, which Claude Code already auto-loads from the standard path — so the hook file was registered twice and rejected, flagging the whole plugin as failed-to-load and disabling the SessionStart update nudge. Dropped the redundant `hooks` manifest key; the hook still loads from the standard location. (MCP tools and skills were unaffected.)
+
 ## [2.4.1]
 
 ### Fixed
