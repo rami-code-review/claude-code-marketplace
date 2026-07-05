@@ -42,10 +42,10 @@ $ARGUMENTS
 Invoke the **`rami-code-review`** skill with the detected `pr_url`. The skill is the single source of truth for the loop algorithm:
 
 - Phase 1: PR detection (skipped — already done above).
-- Phase 2: Iterate up to 5 times. Each iteration calls `get_review_results`, exits when `ready_for_review == true`, otherwise triages issues by severity (Blocking → High → Medium → Low) and either fixes them or rebuts via `rebut`. Pushes after each iteration.
+- Phase 2: Iterate up to 5 times. Each iteration calls `get_review_results`, exits when `ready_for_review == true`, otherwise acts on every entry in the `blockers` array — finding blockers by severity (Blocking → High → Medium → Low), fixed or rebutted via `content_hash`, and unresolved-thread blockers handled on GitHub. Pushes after each iteration.
 - Phase 3: Report a summary, including every file the loop changed.
 
-The skill enforces the rules that make the loop correct: exit on `ready_for_review`, never `issue_count == 0`; rebut via the MCP tool, never via a GitHub thread reply or "Resolve conversation" click.
+The skill enforces the rules that make the loop correct: exit only when `blockers` is empty (`ready_for_review == true`); fix or rebut findings via the MCP tool by `content_hash`, never via a GitHub thread reply or "Resolve conversation" click.
 
 On Claude Code the skill runs in a forked subagent (`context: fork`), so review payloads and fix prompts stay out of this conversation — only its final report returns. Relay that report to the user in full, including the **Files changed** list. If it contains a **Needs user decision** section, present the options to the user and, once they answer, re-invoke the skill with the same `pr_url` and their decision as `user_decision`.
 

@@ -33,14 +33,14 @@ To authenticate:
 
 2. **Check status.** Call `get_review_status(pr_url)` on the Rami MCP server.
 
-3. **Report.** Use `ready_for_review` as the authoritative done signal — not `issue_count == 0`.
+3. **Report.** Use `ready_for_review` as the authoritative done signal — it is `true` exactly when the `blockers` array is empty.
 
    | Response | Report |
    |---|---|
    | `status: pending` / `in_progress` / `queued` | "Review in progress (stage: `<current_stage>`)" |
-   | `status: completed`, `ready_for_review: true` | "Ready for review. No blocking findings." |
-   | `status: completed`, `ready_for_review: false` | "Not ready: `issue_count` new + `pending_history_count` carryover + `github_unresolved_count` thread(s) outstanding. Run `/rami:review` to triage." |
+   | `status: completed`, `ready_for_review: true` | "Ready for review. No blockers." |
+   | `status: completed`, `ready_for_review: false` | "Not ready: `<len(blockers)>` blocker(s) outstanding — findings to fix or rebut, plus any unresolved review threads. Run `/rami:review` to triage." |
    | `status: not_found` | "No review found for this PR." |
    | Error | Report the error message. |
 
-   Do not infer doneness from `issue_count == 0` alone. Carryover findings (`pending_history_count`) and unresolved threads (`github_unresolved_count`) can keep `ready_for_review` false even when the new pass found nothing.
+   Do not infer doneness any other way — a non-empty `blockers` array keeps `ready_for_review` false. Each blocker is a `finding` (fix or rebut) or an `unresolved_thread` (resolve on GitHub), so the new pass finding nothing does not by itself mean the PR is ready.
