@@ -24,6 +24,8 @@ Forbidden GitHub-side actions on Rami threads — across **all channels** (GitHu
 
 Rami does not ingest signals from these channels. A thread that looks resolved or replied-to via `gh` or a GitHub MCP will still block `ready_for_review`, and the loop will keep reporting it as outstanding. **Do not invoke `gh` or GitHub MCP tools against Rami threads during the loop.** They are fine for unrelated PR work (reading diffs, opening PRs, checking CI), but never for resolving, replying to, or dismissing Rami findings.
 
+This rule is about Rami **findings** — the `kind: "finding"` blockers, settled only through Rami's tools. An `unresolved_thread` blocker is a different thing (a PR review thread not tracked as a finding) and is the one exception — Phase 2 covers how to handle it.
+
 The authoritative done signal is `ready_for_review == true` from `get_review_results`. Trust that field over what GitHub's UI, `gh`, or any GitHub MCP reports about thread state.
 
 ## Inputs
@@ -63,21 +65,22 @@ If the caller did not supply `pr_url`, run Phase 1 to detect it from the current
 1. `iteration++`
 2. Call `get_review_results(pr_url)` on the Rami MCP server.
 3. **Exit condition.** Stop the loop when `ready_for_review == true` OR `iteration > max_iterations`.
-   - `ready_for_review` is true only when `blocking_issue_count == 0` AND `pending_history_count == 0` AND `github_unresolved_count == 0`.
-   - Do **not** exit on `issue_count == 0` alone. New-pass `issue_count` ignores carryover findings tracked in `pending_history_count` and human/bot threads in `github_unresolved_count`. A PR can have `issue_count: 0` and still be unmergeable.
-4. Record: `history.push({iteration, issues, pending_history_count, github_unresolved_count})`.
-5. **Triage each issue.** Walk issues in priority order — Blocking → High → Medium → Low — and include `pending_history_issues` (carryover from previous passes), not just the new-pass `issues`.
+   - `ready_for_review` is the authoritative done signal — it is `true` exactly when the `blockers` array is empty. Do **not** infer doneness any other way; if `blockers` is non-empty the PR is not mergeable, no matter what else the response says.
+4. Record: `history.push({iteration, blockers})`.
+5. **Triage each blocker.** `get_review_results` returns one `blockers` array — the complete enumeration of everything preventing `ready_for_review`. Act on every entry. Each has a `kind`:
 
-   For each issue, decide between **Fix** and **Rebut**:
+   **`kind: "finding"`** — a Rami finding (with `severity`, `path`, `line`, `summary`, `content_hash`). Take findings in severity order — Blocking → High → Medium → Low — and for each decide **Fix** or **Rebut**, addressing it by its `content_hash`:
 
-   - **Fix.** Call `get_fix_prompt(pr_url, issue_index)` on the Rami MCP server for instructions, then apply the change with the Edit tool.
-   - **Rebut.** Only when you have one of the four valid reasons: false positive, framework guarantee, intentional design, duplicate. Call `rebut(pr_url, issue_index, author_reply="<one paragraph: reason + evidence>")` on the Rami MCP server.
+   - **Fix.** Call `get_fix_prompt(pr_url, content_hash)` on the Rami MCP server for the full detail (problem, risk, suggested fix), then apply the change with the Edit tool. This works for carried-over findings (`from_prior_review: true`) too.
+   - **Rebut.** Only when you have one of the four valid reasons: false positive, framework guarantee, intentional design, duplicate. Call `rebut(pr_url, content_hash, author_reply="<one paragraph: reason + evidence>")` on the Rami MCP server.
      - `verdict: valid` → finding dismissed by Rami; move on.
      - `verdict: invalid` or `partial` → **must fix.** Push a code change that addresses Rami's specific concern, or stop the loop and report it under **Needs user decision**. Do **not** fall back to a GitHub thread reply, "Resolve conversation" click, `gh` command, or GitHub MCP call — Rami doesn't ingest any of those, so the thread will keep blocking `ready_for_review`.
 
    See the `rami-rebut-finding` skill for the full rebuttal protocol.
 
-6. **Push.** After triaging the iteration's issues:
+   **`kind: "unresolved_thread"`** — a review thread on the PR (often a human reviewer's), not tracked as a Rami finding. Read it at its `url`. If it points at a code concern you can address, fix the code and push. If it needs a human answer or decision, report it under **Needs user decision** — do **not** unilaterally resolve or answer someone else's review thread. (`tracked_by_rami: false` confirms Rami cannot settle it for you.) This is the one blocker kind cleared on GitHub rather than through Rami's tools; readiness re-checks GitHub thread state on the next `get_review_results`.
+
+6. **Push.** After triaging the iteration's blockers:
    ```bash
    git add -A && git commit -m "fix: address rami review feedback" && git push
    ```
@@ -92,16 +95,16 @@ When the loop exits, summarize:
 
 PR: <pr_url>
 Iterations: <count>
-Status: <Clean | N issues remaining>
+Status: <Clean | N blockers remaining>
 
 Files changed:
-- <path> — <one line: which issue this fixed>
+- <path> — <one line: which finding this fixed>
 
 Per-iteration:
-- Iteration N: found X, fixed Y, rebutted Z, remaining R
+- Iteration N: blockers X, fixed Y, rebutted Z, remaining R
 
 Rebuttals:
-- Issue #N: [verdict] one-line evidence summary
+- <finding summary or path:line>: [verdict] one-line evidence summary
 
 Needs user decision (omit when none):
 - <issue>: <what was tried and why the loop stopped> — options: fix by hand | rebut with new evidence | defer | dismiss

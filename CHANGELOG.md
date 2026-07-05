@@ -4,6 +4,12 @@ All notable changes to the Rami plugin are documented here. The version is the `
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.4.1]
+
+### Fixed
+
+- Review loop realigned to the current `get_review_results` response schema. It now reads the single `blockers` array and derives doneness from `ready_for_review` (true exactly when `blockers` is empty), walks each blocker by `kind` (`finding` → fix or rebut, `unresolved_thread` → resolve on GitHub), and addresses findings by `content_hash`. Replaces stale references to the removed `issue_count` / `pending_history_count` / `github_unresolved_count` counters and the positional `issue_index` argument, which the server no longer returns or accepts — following the old copy would have misfired `get_fix_prompt`/`rebut`.
+
 ## [2.4.0]
 
 ### Added
