@@ -1,6 +1,6 @@
 {
   "name": "rami",
-  "version": "2.4.2",
+  "version": "2.4.3",
   "description": "AI code review for Claude Code and Codex. Reviews every PR, fixes issues via MCP, you decide what merges.",
   "author": {
     "name": "Rami",
@@ -22,7 +22,7 @@
     "mcp",
     "autofix"
   ],
-  "skills": "./skills/",
+  "skills": "./workflows/",
   "mcpServers": "./.mcp.json",
   "interface": {
     "displayName": "Rami",

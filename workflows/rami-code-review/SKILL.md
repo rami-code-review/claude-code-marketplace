@@ -6,9 +6,9 @@ context: fork
 
 # Rami Code Review — Loop Algorithm
 
-This skill is the single source of truth for the Rami review-fix-rebut loop. Slash commands (`/rami:review`) delegate here.
+This workflow is the single source of truth for the Rami review-fix-rebut loop. Slash commands (`/rami:review`) and Codex skill dispatch delegate here.
 
-On Claude Code this skill runs in a forked subagent (`context: fork`): review payloads and fix prompts stay out of the main conversation, and your final message is the only thing returned to it. The final message must therefore carry the complete Phase 3 report. Wherever these instructions say to stop for a user decision, that means: stop the loop and end the run with the report's **Needs user decision** section filled in — the caller relays it and may re-invoke this skill with the decision.
+On Claude Code this workflow runs through the `rami-review-loop` agent: review payloads and fix prompts stay out of the main conversation, and your final message is the only thing returned to it. The final message must therefore carry the complete Phase 3 report. Wherever these instructions say to stop for a user decision, that means: stop the loop and end the run with the report's **Needs user decision** section filled in — the caller relays it and may re-run this workflow with the decision.
 
 ## Rami owns Rami review state
 
@@ -76,7 +76,7 @@ If the caller did not supply `pr_url`, run Phase 1 to detect it from the current
      - `verdict: valid` → finding dismissed by Rami; move on.
      - `verdict: invalid` or `partial` → **must fix.** Push a code change that addresses Rami's specific concern, or stop the loop and report it under **Needs user decision**. Do **not** fall back to a GitHub thread reply, "Resolve conversation" click, `gh` command, or GitHub MCP call — Rami doesn't ingest any of those, so the thread will keep blocking `ready_for_review`.
 
-   See the `rami-rebut-finding` skill for the full rebuttal protocol.
+   See the `rami-rebut-finding` workflow for the full rebuttal protocol.
 
    **`kind: "unresolved_thread"`** — a review thread on the PR (often a human reviewer's), not tracked as a Rami finding. Read it at its `url`. If it points at a code concern you can address, fix the code and push. If it needs a human answer or decision, report it under **Needs user decision** — do **not** unilaterally resolve or answer someone else's review thread. (`tracked_by_rami: false` confirms Rami cannot settle it for you.) This is the one blocker kind cleared on GitHub rather than through Rami's tools; readiness re-checks GitHub thread state on the next `get_review_results`.
 

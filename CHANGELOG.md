@@ -4,6 +4,13 @@ All notable changes to the Rami plugin are documented here. The version is the `
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.4.3]
+
+### Fixed
+
+- Claude Code no longer exposes internal Rami workflows as hyphenated pseudo-commands such as `/rami-doctor`, `/rami-upgrade`, or `/rami-code-review`. Shared workflow files moved from the auto-discovered `skills/` directory to `workflows/`, while Codex still loads them explicitly as skills. The `rami-rebut-finding` skill remains auto-triggered for natural-language rebuttal requests; it is intentionally not a `/rami:rebut` slash command.
+- `/rami:review` keeps review payloads out of the main conversation by delegating to a private `rami-review-loop` agent instead of relying on a public `rami-code-review` skill.
+
 ## [2.4.2]
 
 ### Fixed

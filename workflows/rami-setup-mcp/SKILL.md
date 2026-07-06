@@ -113,7 +113,7 @@ If `get_review_results` blocks for a while and then returns `status: completed`,
 
 ## Step 6: Extend project instructions (optional — ask first)
 
-Most of Rami's workflow lives in skills that auto-trigger ("review my PR"), so it does **not** belong in always-on project instructions. There is one exception worth persisting: the **state-ownership rule**, so an agent working on an unrelated task never resolves a Rami thread the wrong way (via the GitHub UI or `gh`, which Rami doesn't ingest).
+Most of Rami's workflow loads only when a Rami command or Codex skill runs, so it does **not** belong in always-on project instructions. There is one exception worth persisting: the **state-ownership rule**, so an agent working on an unrelated task never resolves a Rami thread the wrong way (via the GitHub UI or `gh`, which Rami doesn't ingest).
 
 **Only do this with explicit consent.** Ask:
 
@@ -148,6 +148,7 @@ Once these three steps are done, the user has access to:
 - **Automatic reviews on push** — the GitHub App posts inline review comments on every PR.
 - **The autofix loop via MCP** — agents call `get_review_results` after every push, fix or rebut findings via `get_fix_prompt` / `rebut`, and re-run until `ready_for_review: true`.
 - **Slash commands** (Claude Code / Codex with plugin) — `/rami:review`, `/rami:review-status`, `/rami:usage`, `/rami:setup`, `/rami:doctor`, `/rami:upgrade`.
+- **Rebuttal skill** — natural-language requests such as "rebut this" or "Rami is wrong about this finding" trigger `rami-rebut-finding`, which uses Rami's MCP rebuttal protocol.
 - **Web console** — usage and credit balance at https://rami.reviews.
 
 ## Troubleshooting
@@ -167,4 +168,4 @@ The public-facing version of this guide lives at:
 https://rami.reviews/llms.txt
 ```
 
-If anything in this skill drifts from llms.txt, llms.txt wins — it is what every other LLM client fetches and is what users see.
+If anything in this workflow drifts from llms.txt, llms.txt wins — it is what every other LLM client fetches and is what users see.
