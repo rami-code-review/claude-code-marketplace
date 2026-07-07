@@ -1,6 +1,7 @@
 ---
 name: rami-rebut-finding
 description: Auto-trigger when the user wants to challenge, rebut, or dispute a Rami code review finding — phrases like "rebut this", "this is a false positive", "Rami is wrong about X", or "tell Rami this is intentional". Routes disagreement through the Rami MCP rebuttal protocol instead of a public slash command.
+user-invocable: false
 ---
 
 # Rami Rebut Finding
