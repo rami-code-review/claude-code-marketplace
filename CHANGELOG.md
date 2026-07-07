@@ -4,6 +4,12 @@ All notable changes to the Rami plugin are documented here. The version is the `
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.4.4]
+
+### Fixed
+
+- `rami-rebut-finding` no longer appears as a `/rami:rami-rebut-finding` slash command. 2.4.3 intended it to be auto-trigger-only, but leaving the skill in the auto-discovered `skills/` directory still registered a user-facing command — Claude Code exposes both surfaces from one skill. Added `user-invocable: false` to the skill, which suppresses the slash command while keeping the natural-language auto-trigger ("rebut this", "this is a false positive") that rebuttal depends on. Codex is unaffected; it loads the workflow from `workflows/` and never saw the wrapper.
+
 ## [2.4.3]
 
 ### Fixed
