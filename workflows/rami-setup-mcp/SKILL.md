@@ -58,7 +58,39 @@ Add to `.cursor/mcp.json` in the project root:
 
 ### Codex CLI
 
-Install the Rami plugin from this marketplace's Codex metadata. The Codex plugin exposes the same MCP server as the Claude plugin and gives Codex sessions the same `/rami:review`, `/rami:review-status`, `/rami:usage`, `/rami:setup`, `/rami:doctor`, and `/rami:upgrade` workflows.
+```bash
+codex mcp add rami --url https://rami.reviews/mcp
+```
+
+Codex detects OAuth support and completes the login inside this one command — there is no separate authentication step. Verify with `codex mcp list`, which should report rami as enabled with OAuth auth. The equivalent entry in `~/.codex/config.toml` is:
+
+```toml
+[mcp_servers.rami]
+url = "https://rami.reviews/mcp"
+```
+
+Installing the Rami plugin from the marketplace's Codex metadata additionally gives Codex sessions the `/rami:review`, `/rami:review-status`, `/rami:usage`, `/rami:setup`, `/rami:doctor`, and `/rami:upgrade` workflows.
+
+**Stop Codex's per-call approval prompts.** Codex asks for approval on every Rami tool call because the calls reach an external service. The client sends only the PR URL — Rami reads the PR through its GitHub App installation — so the read/poll tools are safe to pre-approve. Note that `get_review_results` starts a review when none exists yet; that is the loop working as intended, and re-reviewing the same PR does not consume additional quota. Offer to add these entries to `~/.codex/config.toml`, and apply them only with the user's consent (this must be user-level config; Codex ignores approval settings shipped inside a plugin):
+
+```toml
+[mcp_servers.rami.tools.get_review_results]
+approval_mode = "approve"
+
+[mcp_servers.rami.tools.get_review_status]
+approval_mode = "approve"
+
+[mcp_servers.rami.tools.get_fix_prompt]
+approval_mode = "approve"
+
+[mcp_servers.rami.tools.get_current_branch_pr]
+approval_mode = "approve"
+
+[mcp_servers.rami.tools.get_usage]
+approval_mode = "approve"
+```
+
+Leave `rebut`, `defer`, and `dismiss` unlisted — they mutate review state, and Codex should keep asking before each of those.
 
 ### Other MCP clients
 
@@ -82,7 +114,7 @@ For Claude Code:
 4. Complete GitHub authentication in the browser tab that opens.
 5. Return to Claude Code.
 
-For Cursor, Codex, and others, the client typically opens an OAuth window the first time you call any Rami tool. Follow its prompt.
+Codex completes OAuth inside `codex mcp add` (Step 2) — no further action needed. For Cursor and other clients, the client typically opens an OAuth window the first time you call any Rami tool; follow its prompt.
 
 ## Step 4: Verify
 
@@ -159,6 +191,7 @@ Once these three steps are done, the user has access to:
 | `not_found` from `get_review_results` for a real PR URL | GitHub App not installed on this repo | Step 1, scope the install to include this repo |
 | `get_current_branch_pr` returns `status: not_found` | No PR exists for this branch yet | Push the branch and open a PR first |
 | Rate-limited responses | Quota exceeded for current period | Check `get_usage`; may need a paid plan or credits |
+| Codex asks for approval on every Rami call | No per-tool `approval_mode` in user config | Add the per-tool `approval_mode = "approve"` entries from Step 2 to `~/.codex/config.toml` (with user consent) |
 
 ## Authoritative reference
 
