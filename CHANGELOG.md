@@ -4,6 +4,13 @@ All notable changes to the Rami plugin are documented here. The version is the `
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.4.5]
+
+### Changed
+
+- `/rami:setup` now gives Codex a real install path (`codex mcp add rami --url https://rami.reviews/mcp`, with OAuth completing inside that command) instead of pointing at marketplace metadata, and corrects the OAuth guidance that wrongly told Codex users to expect a login window on first tool call.
+- `/rami:setup` and `/rami:doctor` now remediate Codex's per-call approval prompts: with the user's consent, the agent adds per-tool `approval_mode = "approve"` entries for the read/poll tools (`get_review_results`, `get_review_status`, `get_fix_prompt`, `get_current_branch_pr`, `get_usage`) to `~/.codex/config.toml`. The mutating tools (`rebut`, `defer`, `dismiss`) stay unlisted so Codex keeps asking before each of those. Verified against codex-cli 0.145.0: the entries must live in user-level config — Codex ignores approval settings shipped inside a plugin, which is why this releases as skill guidance rather than plugin config.
+
 ## [2.4.4]
 
 ### Fixed
