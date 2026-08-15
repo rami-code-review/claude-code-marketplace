@@ -71,7 +71,7 @@ url = "https://rami.reviews/mcp"
 
 Installing the Rami plugin from the marketplace's Codex metadata additionally gives Codex sessions the `/rami:review`, `/rami:review-status`, `/rami:usage`, `/rami:setup`, `/rami:doctor`, and `/rami:upgrade` workflows.
 
-**Stop Codex's per-call approval prompts.** Codex asks for approval on every Rami tool call because the calls reach an external service. The client sends only the PR URL — Rami reads the PR through its GitHub App installation — so the read/poll tools are safe to pre-approve. Note that `get_review_results` starts a review when none exists yet; that is the loop working as intended, and re-reviewing the same PR does not consume additional quota. Offer to add these entries to `~/.codex/config.toml`, and apply them only with the user's consent (this must be user-level config; Codex ignores approval settings shipped inside a plugin):
+**Stop Codex's per-call approval prompts.** Codex asks for approval on every Rami tool call because the calls reach an external service. The client sends only the PR URL — Rami reads the PR through its GitHub App installation — so the read-only tools are safe to pre-approve. Note that `get_review_results` starts a review when none exists yet; that is the loop working as intended, and re-reviewing the same PR does not consume additional quota. It also blocks while a review runs, reporting each stage as the review reaches it, so leaving it unapproved stalls the loop behind a prompt on every status update. Offer to add these entries to `~/.codex/config.toml`, and apply them only with the user's consent (this must be user-level config; Codex ignores approval settings shipped inside a plugin):
 
 ```toml
 [mcp_servers.rami.tools.get_review_results]

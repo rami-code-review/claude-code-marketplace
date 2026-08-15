@@ -66,8 +66,8 @@ The single source of truth for "latest" is the `version` field in `.claude-plugi
 
 Skip this check outside Codex. Read `~/.codex/config.toml` and look for `[mcp_servers.rami.tools.get_review_results]` with `approval_mode = "approve"`.
 
-- Present → ✓ (read/poll tools pre-approved)
-- Absent → ⚠ **Codex will ask for approval on every Rami call.** The client sends only the PR URL (Rami reads the PR through its GitHub App installation), so the read/poll tools are safe to pre-approve; `get_review_results` may start a review when none exists, and re-reviews of the same PR consume no additional quota. Fix: with the user's consent, add `approval_mode = "approve"` entries under `[mcp_servers.rami.tools.<name>]` for `get_review_results`, `get_review_status`, `get_fix_prompt`, `get_current_branch_pr`, and `get_usage` — the exact snippet is in `/rami:setup` and at https://rami.reviews/llms.txt. This must be user-level config; Codex ignores approval settings shipped inside a plugin. Leave `rebut`/`defer`/`dismiss` unlisted so they keep prompting.
+- Present → ✓ (read-only tools pre-approved)
+- Absent → ⚠ **Codex will ask for approval on every Rami call.** The client sends only the PR URL (Rami reads the PR through its GitHub App installation), so the read-only tools are safe to pre-approve; `get_review_results` may start a review when none exists, and re-reviews of the same PR consume no additional quota. It also blocks while a review runs and reports each stage as the review reaches it, so leaving it unapproved stalls the loop behind a prompt on every status update. Fix: with the user's consent, add `approval_mode = "approve"` entries under `[mcp_servers.rami.tools.<name>]` for `get_review_results`, `get_review_status`, `get_fix_prompt`, `get_current_branch_pr`, and `get_usage` — the exact snippet is in `/rami:setup` and at https://rami.reviews/llms.txt. This must be user-level config; Codex ignores approval settings shipped inside a plugin. Leave `rebut`/`defer`/`dismiss` unlisted so they keep prompting.
 
 ## Report
 
