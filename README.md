@@ -37,8 +37,8 @@ Claude Code:
 
 Codex:
 
-```
-Install the Rami plugin from this repository's Codex marketplace metadata.
+```bash
+codex plugin marketplace add rami-code-review/claude-code-marketplace
 ```
 
 ### 3. Install the plugin
@@ -51,9 +51,11 @@ Claude Code:
 
 Codex:
 
+```bash
+codex plugin add rami@rami-code-review
 ```
-Install the rami plugin from the rami-code-review marketplace.
-```
+
+Start a new Codex task after installation so the Rami skills and MCP tools are loaded.
 
 ### 4. Run a review
 
@@ -115,12 +117,21 @@ Rami checks once a day — silently — whether a newer plugin version is publis
 
 Or manually:
 
-```
+```bash
 claude plugin marketplace update rami-code-review
 claude plugin update rami@rami-code-review
 ```
 
 Then run `/reload-plugins` (or start a new session) to activate it.
+
+For Codex:
+
+```bash
+codex plugin marketplace upgrade rami-code-review
+codex plugin add rami@rami-code-review
+```
+
+Then start a new task to activate the updated plugin.
 
 ## Links
 
