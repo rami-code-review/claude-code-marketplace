@@ -1,7 +1,6 @@
 ---
 name: rami-doctor
 description: Use when the user wants to diagnose, verify, or health-check a Rami install — "is Rami set up", "rami doctor", "check my rami install", "why isn't rami working". Runs read-only probes (MCP auth, GitHub App coverage, quota, plugin version) and prints a ✓/✗ checklist with the fix for each failure.
-model: haiku
 ---
 
 # Rami Doctor

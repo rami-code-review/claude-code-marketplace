@@ -4,6 +4,13 @@ All notable changes to the Rami plugin are documented here. The version is the `
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.4.7]
+
+### Fixed
+
+- Claude Code and Codex now use separate package roots. Claude Code keeps the root `commands/`, `agents/`, `workflows/`, and intentional rebuttal skill, while Codex installs from `plugins/rami` with its own compatible skill set. This prevents Codex adapters from reappearing as unintended Claude Code slash commands while preserving native review, status, usage, setup, doctor, upgrade, and rebuttal workflows in Codex.
+- Added `scripts/sync-codex-package.py` so the isolated Codex skills remain checked copies of the canonical shared workflows instead of drifting independently.
+
 ## [2.4.6]
 
 ### Added

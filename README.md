@@ -6,6 +6,8 @@
 
 **Works with Claude Code AND Codex.** Rami reviews every PR for security, bugs, and performance — then fixes the findings through MCP. You stay in control of what merges.
 
+Both clients are first-class: Claude Code loads the root plugin package, while Codex installs its isolated package from `plugins/rami` through the same marketplace repository.
+
 <p align="center">
   <img src="https://rami.reviews/static/images/rami_pr_check.png" alt="Rami PR check" width="720">
 </p>

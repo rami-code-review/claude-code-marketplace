@@ -8,7 +8,7 @@
       "name": "rami",
       "source": {
         "source": "local",
-        "path": "./"
+        "path": "./plugins/rami"
       },
       "policy": {
         "installation": "AVAILABLE",
