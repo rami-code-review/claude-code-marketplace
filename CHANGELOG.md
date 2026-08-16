@@ -4,6 +4,18 @@ All notable changes to the Rami plugin are documented here. The version is the `
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.4.6]
+
+### Added
+
+- Rami is now packaged as a validator-compliant Codex marketplace plugin: Codex-facing skills live under `skills/`, with thin adapters that preserve the existing Claude Code workflow sources of truth.
+- Codex marketplace metadata now includes privacy and terms links plus natural-language starter prompts for review, status, and diagnostics.
+
+### Changed
+
+- The README and setup/upgrade workflows now provide exact `codex plugin marketplace` and `codex plugin add` commands for GitHub installation and updates.
+- The Codex catalog category is now `Developer Tools`, matching comparable code-review plugins in the curated catalog.
+
 ## [2.4.5]
 
 ### Changed

@@ -6,6 +6,6 @@ user-invocable: false
 
 # Rami Rebut Finding
 
-Read and follow @${CLAUDE_PLUGIN_ROOT}/workflows/rami-rebut-finding/SKILL.md.
+Read and follow [the canonical rebuttal workflow](../../workflows/rami-rebut-finding/SKILL.md).
 
 This skill is intentionally triggered by natural-language user intent, not by a `/rami:*` slash command. Use Rami's MCP `rebut` tool as the only state-changing channel for disputed Rami findings; never reply to or resolve the GitHub review thread as a substitute.

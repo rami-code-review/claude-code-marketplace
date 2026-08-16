@@ -56,7 +56,16 @@ Add to `.cursor/mcp.json` in the project root:
 }
 ```
 
-### Codex CLI
+### Codex (recommended: plugin marketplace)
+
+```bash
+codex plugin marketplace add rami-code-review/claude-code-marketplace
+codex plugin add rami@rami-code-review
+```
+
+Start a new task after installation. This installs the Rami MCP server and the review, status, setup, doctor, upgrade, and rebuttal skills together.
+
+### Codex (direct MCP, no plugin)
 
 ```bash
 codex mcp add rami --url https://rami.reviews/mcp
@@ -69,7 +78,7 @@ Codex detects OAuth support and completes the login inside this one command — 
 url = "https://rami.reviews/mcp"
 ```
 
-Installing the Rami plugin from the marketplace's Codex metadata additionally gives Codex sessions the `/rami:review`, `/rami:review-status`, `/rami:usage`, `/rami:setup`, `/rami:doctor`, and `/rami:upgrade` workflows.
+Installing the Rami plugin from the marketplace additionally gives Codex the review, status, setup, doctor, upgrade, and rebuttal skills.
 
 **Stop Codex's per-call approval prompts.** Codex asks for approval on every Rami tool call because the calls reach an external service. The client sends only the PR URL — Rami reads the PR through its GitHub App installation — so the read-only tools are safe to pre-approve. Note that `get_review_results` starts a review when none exists yet; that is the loop working as intended, and re-reviewing the same PR does not consume additional quota. It also blocks while a review runs, reporting each stage as the review reaches it, so leaving it unapproved stalls the loop behind a prompt on every status update. Offer to add these entries to `~/.codex/config.toml`, and apply them only with the user's consent (this must be user-level config; Codex ignores approval settings shipped inside a plugin):
 
@@ -179,7 +188,8 @@ Once these three steps are done, the user has access to:
 
 - **Automatic reviews on push** — the GitHub App posts inline review comments on every PR.
 - **The autofix loop via MCP** — agents call `get_review_results` after every push, fix or rebut findings via `get_fix_prompt` / `rebut`, and re-run until `ready_for_review: true`.
-- **Slash commands** (Claude Code / Codex with plugin) — `/rami:review`, `/rami:review-status`, `/rami:usage`, `/rami:setup`, `/rami:doctor`, `/rami:upgrade`.
+- **Claude Code slash commands** — `/rami:review`, `/rami:review-status`, `/rami:usage`, `/rami:setup`, `/rami:doctor`, `/rami:upgrade`.
+- **Codex skills** — review, review status, setup, doctor, upgrade, and rebuttal workflows that trigger from natural-language requests.
 - **Rebuttal skill** — natural-language requests such as "rebut this" or "Rami is wrong about this finding" trigger `rami-rebut-finding`, which uses Rami's MCP rebuttal protocol.
 - **Web console** — usage and credit balance at https://rami.reviews.
 

@@ -40,7 +40,8 @@ The in-session equivalent for the catalog refresh, if the user prefers to run it
 ## 4. Other install methods
 
 - **Direct MCP** (`claude mcp add rami …`): there is no plugin package to update — the MCP server is hosted and updates server-side automatically. To get the slash commands and the update nudge, install via the marketplace instead.
-- **Cursor / Codex:** update the Rami plugin through that client's plugin manager; the hosted MCP server needs no action.
+- **Codex marketplace plugin:** run `codex plugin marketplace upgrade rami-code-review`, then `codex plugin add rami@rami-code-review`, and start a new task. The hosted MCP server needs no separate update.
+- **Cursor:** update Rami through Cursor's plugin manager; the hosted MCP server needs no action.
 
 ## 5. Verify
 
