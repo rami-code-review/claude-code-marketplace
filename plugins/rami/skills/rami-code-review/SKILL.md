@@ -1,7 +1,6 @@
 ---
 name: rami-code-review
 description: Run the Rami review loop on a PR — fetch findings, fix or rebut each by severity, push, repeat until ready_for_review is true. Invoked by /rami:review and auto-triggered when the user asks for "rami review", "review my PR", "fix all rami issues", or similar.
-context: fork
 ---
 
 # Rami Code Review — Loop Algorithm

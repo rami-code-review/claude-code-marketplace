@@ -1,6 +1,6 @@
 {
   "name": "rami",
-  "version": "2.4.5",
+  "version": "2.4.6",
   "description": "AI code review for Claude Code and Codex. Reviews every PR, fixes issues via MCP, you decide what merges.",
   "author": {
     "name": "Rami",
@@ -22,26 +22,25 @@
     "mcp",
     "autofix"
   ],
-  "skills": "./workflows/",
+  "skills": "./skills/",
   "mcpServers": "./.mcp.json",
   "interface": {
     "displayName": "Rami",
     "shortDescription": "AI code review for Claude Code and Codex",
-    "longDescription": "AI code review for Claude Code and Codex. Rami reviews every PR for security, bugs, and performance, then fixes the findings through MCP — or accepts your dispute when the finding is wrong. Trigger reviews with /rami:review, check status with /rami:review-status, and manage usage with /rami:usage.",
+    "longDescription": "Rami reviews every pull request for security, bugs, and performance, then helps Codex fix valid findings through MCP. When a finding is wrong, Codex can submit an evidence-based rebuttal to Rami instead.",
     "developerName": "Rami",
-    "category": "Coding",
+    "category": "Developer Tools",
     "capabilities": [
       "Interactive",
       "Write"
     ],
     "websiteURL": "https://rami.reviews",
+    "privacyPolicyURL": "https://rami.reviews/privacy",
+    "termsOfServiceURL": "https://rami.reviews/terms",
     "defaultPrompt": [
-      "/rami:review",
-      "/rami:review-status",
-      "/rami:usage",
-      "/rami:setup",
-      "/rami:doctor",
-      "/rami:upgrade"
+      "Run a Rami review on my pull request and fix every valid finding.",
+      "Check the current Rami review status without starting a new review.",
+      "Diagnose my Rami setup and tell me how to fix any failures."
     ],
     "screenshots": [],
     "brandColor": "#111827"
