@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - The README and setup/upgrade workflows now provide exact `codex plugin marketplace` and `codex plugin add` commands for GitHub installation and updates.
 - The Codex catalog category is now `Developer Tools`, matching comparable code-review plugins in the curated catalog.
+- The review workflow's failure table now covers mid-run `authentication_required` failures: re-authenticating does not reach an already-running loop, so the loop reports blocked (without claiming the token expired) and the user re-runs the command after `/mcp` re-auth. A fresh run picks up the new token.
 
 ## [2.4.5]
 

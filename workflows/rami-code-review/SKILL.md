@@ -124,6 +124,7 @@ List every file the loop edited under **Files changed** — in a forked run the 
 | Symptom | Likely cause | What to do |
 |---------|--------------|------------|
 | Rami MCP tools not available | Plugin not authenticated | Stop. Tell the user to authenticate via `/mcp` (Claude Code) or the equivalent for their client. |
+| MCP tools fail with `authentication_required` mid-run | This connection predates the newest token — re-authenticating does not reach an already-running loop | Stop and report blocked; do not call the token expired. Tell the user to re-authenticate via `/mcp` (or their client's equivalent), then re-run the command — a fresh run picks up the new token. |
 | `status: auth_required` from any tool | OAuth not completed for this user | Stop. Report the auth message. |
 | `status: not_found` from `get_current_branch_pr` | No PR exists for this branch | Stop. Report the branch name. |
 | Same issue persists 2+ iterations | AI cannot fix it; might be a real false positive Rami won't accept | Stop. Report it under **Needs user decision**. |
