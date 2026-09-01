@@ -2,6 +2,7 @@
 
 import argparse
 import difflib
+import os
 from pathlib import Path
 
 
@@ -9,6 +10,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SOURCE_ROOT = ROOT / "workflows"
 TARGET_ROOT = ROOT / "plugins" / "rami" / "skills"
 CODEX_UNSUPPORTED_FRONTMATTER = {"context", "model"}
+REQUIRED_FRONTMATTER = {"name", "description"}
 
 
 def codex_skill(source: Path) -> str:
@@ -28,6 +30,14 @@ def codex_skill(source: Path) -> str:
         for line in lines[1:end]
         if line.split(":", 1)[0].strip() not in CODEX_UNSUPPORTED_FRONTMATTER
     ]
+    keys = {
+        line.split(":", 1)[0].strip()
+        for line in frontmatter
+        if ":" in line and not line[0].isspace()
+    }
+    missing = REQUIRED_FRONTMATTER - keys
+    if missing:
+        raise ValueError(f"missing frontmatter keys {sorted(missing)} in {source}")
     return "".join([lines[0], *frontmatter, lines[end], *lines[end + 1 :]])
 
 
@@ -59,7 +69,9 @@ def main() -> int:
             )
         else:
             target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_text(expected)
+            staging = target.with_name(target.name + ".tmp")
+            staging.write_text(expected)
+            os.replace(staging, target)
 
     return int(changed and args.check)
 
