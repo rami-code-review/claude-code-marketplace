@@ -4,6 +4,12 @@ All notable changes to the Rami plugin are documented here. The version is the `
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.4.7]
+
+### Changed
+
+- The review loop and rebuttal workflows now say how to wait after a push without starting another review: `get_review_results` starts the new commit's review, so a `rebut`, `defer`, or `dismiss` sent before it completes is refused with `review is not completed`; poll `get_review_status` instead, which never starts a review. The rebuttal workflow also states the 2000-character `author_reply` cap up front.
+
 ## [2.4.6]
 
 ### Added

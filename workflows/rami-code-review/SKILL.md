@@ -84,6 +84,7 @@ If the caller did not supply `pr_url`, run Phase 1 to detect it from the current
    ```bash
    git add -A && git commit -m "fix: address rami review feedback" && git push
    ```
+   The next `get_review_results` starts the review of the new commit. Do not call `rebut`, `defer`, or `dismiss` between the push and that review completing: Rami refuses them with `review is not completed`. To wait without starting another review, poll `get_review_status`.
 7. Continue the loop (back to step 1).
 
 ## Phase 3: Report
