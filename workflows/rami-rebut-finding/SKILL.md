@@ -30,7 +30,7 @@ If your reason doesn't fit one of these, you don't have a rebuttal — fix the i
 
 ## How to rebut
 
-1. Get the finding's `content_hash` (preferred) or `comment_id` from the most recent `get_review_results(pr_url)` response.
+1. Get the finding's `content_hash` (preferred) or `comment_id` from the most recent `get_review_results(pr_url)` response. If you pushed since, wait for the new commit's review to complete first — poll `get_review_status`, which never starts a review — or the rebut is refused with `review is not completed`. `author_reply` is capped at 2000 characters.
 2. Call `rebut` on the Rami MCP server:
    ```
    rebut(
