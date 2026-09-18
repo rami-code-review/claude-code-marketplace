@@ -4,6 +4,12 @@ All notable changes to the Rami plugin are documented here. The version is the `
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.4.8]
+
+### Added
+
+- `/rami:review fix-only`: a review-loop mode that never calls `rebut`. The loop fixes what it can, dismisses disputed Medium/Low findings with a stated reason (`dismiss` costs no judge call), and reports disputed Blocking/High findings under **Needs user decision**. The default loop is unchanged. The Codex skill accepts the same `mode: fix-only` input.
+
 ## [2.4.7]
 
 ### Changed

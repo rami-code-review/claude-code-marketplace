@@ -14,7 +14,7 @@ Use the Rami MCP `rebut` tool to challenge a finding. This is the only sanctione
 | The finding is wrong (false positive, framework guarantee, intentional design, duplicate) | `rebut` |
 | The finding is correct but you want to fix it | normal Edit + commit + push, then re-run `get_review_results` |
 | The finding is correct and valid but out of scope for this PR | `defer` (acknowledges and stops re-raising) |
-| The user has explicitly told you to discard the finding without evaluation | `dismiss` (user-asked-only escape hatch) |
+| The user has explicitly told you to discard the finding without evaluation, or the review loop is running in `fix-only` mode (the user's standing instruction to dismiss disputed Medium/Low findings instead of rebutting them) | `dismiss` (user-asked-only escape hatch) |
 | You don't have evidence for any of the four rebut reasons | Fix it. Do not rebut to avoid work. |
 
 ## Valid rebut reasons

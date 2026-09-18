@@ -6,6 +6,8 @@ description: Run full AI code review cycle on current PR branch
 
 Run the full review-fix-rebut loop on the PR for the current branch. Max 5 iterations.
 
+Usage: `/rami:review` or `/rami:review fix-only`. In `fix-only` mode the loop never calls `rebut`: it fixes what it can, dismisses disputed Medium/Low findings with a stated reason, and hands disputed Blocking/High findings back to you.
+
 ## Prerequisites
 
 1. **MCP server available.** If Rami MCP tools are not available, stop and display:
@@ -39,10 +41,10 @@ $ARGUMENTS
 
 ## Run the loop
 
-Use the Task tool to launch the **`rami-review-loop`** agent with the detected `pr_url` and any user-supplied decision from `$ARGUMENTS`. The agent reads `${CLAUDE_PLUGIN_ROOT}/workflows/rami-code-review/SKILL.md`, which is the single source of truth for the loop algorithm:
+Use the Task tool to launch the **`rami-review-loop`** agent with the detected `pr_url`, the `mode` (`fix-only` when `$ARGUMENTS` contains the token `fix-only`, case-insensitive; otherwise `default`), and whatever else the user supplied in `$ARGUMENTS` as `user_decision`. The agent reads `${CLAUDE_PLUGIN_ROOT}/workflows/rami-code-review/SKILL.md`, which is the single source of truth for the loop algorithm:
 
 - Phase 1: PR detection (skipped — already done above).
-- Phase 2: Iterate up to 5 times. Each iteration calls `get_review_results`, exits when `ready_for_review == true`, otherwise acts on every entry in the `blockers` array — finding blockers by severity (Blocking → High → Medium → Low), fixed or rebutted via `content_hash`, and unresolved-thread blockers handled on GitHub. Pushes after each iteration.
+- Phase 2: Iterate up to 5 times. Each iteration calls `get_review_results`, exits when `ready_for_review == true`, otherwise acts on every entry in the `blockers` array — finding blockers by severity (Blocking → High → Medium → Low), fixed or rebutted via `content_hash` (in `fix-only` mode: fixed or dismissed, never rebutted), and unresolved-thread blockers handled on GitHub. Pushes after each iteration.
 - Phase 3: Report a summary, including every file the loop changed.
 
 The workflow enforces the rules that make the loop correct: exit only when `blockers` is empty (`ready_for_review == true`); fix or rebut findings via the MCP tool by `content_hash`, never via a GitHub thread reply or "Resolve conversation" click.

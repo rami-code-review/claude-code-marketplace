@@ -33,6 +33,7 @@ The caller (typically a slash command) provides:
 
 - `pr_url` — the PR to review (already validated by the caller's prerequisite check).
 - `user_decision` (optional) — the user's answer to a previous run's **Needs user decision** report. Apply it first (fix by hand as instructed, `defer`, `dismiss`, or rebut with the new evidence), then resume the loop.
+- `mode` (optional) — `default` or `fix-only`. Missing means `default`. `fix-only` is the user's standing instruction for this run: never call `rebut`; Phase 2 step 5 says what replaces it.
 
 If the caller did not supply `pr_url`, run Phase 1 to detect it from the current branch, then continue.
 
@@ -77,6 +78,12 @@ If the caller did not supply `pr_url`, run Phase 1 to detect it from the current
 
    See the `rami-rebut-finding` workflow for the full rebuttal protocol.
 
+   **In `fix-only` mode** the Rebut branch is closed. Every rebuttal is a paid judge call, and this mode exists to spend none of them:
+
+   - Blocking or High: **Fix**. If no fix is possible, stop the loop and report the finding under **Needs user decision** with the reason you would have rebutted with. Do not rebut, defer, or dismiss it.
+   - Medium or Low: **Fix** when a real fix exists. When you would otherwise have rebutted (false positive, framework guarantee, intentional design, duplicate), call `dismiss(pr_url, content_hash, reason="fix-only: <reason class>: <one line of evidence>")` on the Rami MCP server instead. `dismiss` makes no LLM call and marks the finding `[DISMISSED]` on the PR. Record every dismissal for the Phase 3 **Dismissed** list.
+   - Never call `rebut` in this mode, whatever the finding says.
+
    **`kind: "unresolved_thread"`** — a review thread on the PR (often a human reviewer's), not tracked as a Rami finding. Read it at its `url`. If it points at a code concern you can address, fix the code and push. If it needs a human answer or decision, report it under **Needs user decision** — do **not** unilaterally resolve or answer someone else's review thread. (`tracked_by_rami: false` confirms Rami cannot settle it for you.) This is the one blocker kind cleared on GitHub rather than through Rami's tools; readiness re-checks GitHub thread state on the next `get_review_results`.
 
 6. **Push.** After triaging the iteration's blockers:
@@ -106,6 +113,9 @@ Per-iteration:
 Rebuttals:
 - <finding summary or path:line>: [verdict] one-line evidence summary
 
+Dismissed (fix-only mode; omit when none):
+- <path:line>: <reason passed to dismiss>
+
 Needs user decision (omit when none):
 - <issue>: <what was tried and why the loop stopped> — options: fix by hand | rebut with new evidence | defer | dismiss
 ```
@@ -116,6 +126,7 @@ List every file the loop edited under **Files changed** — in a forked run the 
 
 - Rebut only with evidence: false positive, framework guarantee, intentional design, duplicate.
 - Never rebut to avoid work or for style preferences.
+- In `fix-only` mode, never call `rebut`. Disputed Medium/Low findings are dismissed with a reason; disputed Blocking/High findings go to **Needs user decision**.
 - Stop if the same issue persists across 2+ iterations (likely unfixable by AI); report it under **Needs user decision**.
 - Follow the host project's commit and push policy. If commits/pushes are gated by additional project rules (pre-commit hooks, branch protections, manual review), respect them — do not bypass.
 
