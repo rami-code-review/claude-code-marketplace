@@ -68,6 +68,8 @@ If the caller did not supply `pr_url`, run Phase 1 to detect it from the current
 4. Record: `history.push({iteration, blockers})`.
 5. **Triage each blocker.** `get_review_results` returns one `blockers` array — the complete enumeration of everything preventing `ready_for_review`. Act on every entry. Each has a `kind`:
 
+   The response may also carry an `advisory` array: findings below the repository's blocking severity floor (Low by default). They are posted inline like blockers but never affect `ready_for_review`, the check-run, or approval. Fix an advisory finding when the fix is trivial and clearly right; otherwise leave it. Never rebut, defer, or dismiss an advisory finding to clear the PR — nothing is blocked by it.
+
    **`kind: "finding"`** — a Rami finding (with `severity`, `path`, `line`, `summary`, `content_hash`). Take findings in severity order — Blocking → High → Medium → Low — and for each decide **Fix** or **Rebut**, addressing it by its `content_hash`:
 
    - **Fix.** Call `get_fix_prompt(pr_url, content_hash)` on the Rami MCP server for the full detail (problem, risk, suggested fix), then apply the change with the Edit tool. This works for carried-over findings (`from_prior_review: true`) too.
@@ -106,6 +108,9 @@ Per-iteration:
 
 Rebuttals:
 - <finding summary or path:line>: [verdict] one-line evidence summary
+
+Advisory (omit when none):
+- <path:line>: <fixed | left as is>
 
 Needs user decision (omit when none):
 - <issue>: <what was tried and why the loop stopped> — options: fix by hand | rebut with new evidence | defer | dismiss
