@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [2.4.8]
 
+### Added
+
+- The review loop documents the `advisory` array Rami now returns beside `blockers`: findings below the repository's blocking severity floor (Low by default) are posted inline but never block `ready_for_review`, the check-run, or approval. The loop fixes them only when the fix is trivial and never rebuts them to clear a PR.
+
 ### Changed
 
 - The review loop and rebuttal workflows describe the new `status: review_required` response: a `rebut` sent after a push Rami has not reviewed yet is refused without running the judge, and the agent runs `get_review_results` first so fixes reconcile on their own. Both workflows now say plainly never to rebut a finding you just fixed.
