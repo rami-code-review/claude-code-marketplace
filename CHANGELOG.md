@@ -4,6 +4,12 @@ All notable changes to the Rami plugin are documented here. The version is the `
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.4.8]
+
+### Changed
+
+- The review loop and rebuttal workflows describe the new `status: review_required` response: a `rebut` sent after a push Rami has not reviewed yet is refused without running the judge, and the agent runs `get_review_results` first so fixes reconcile on their own. Both workflows now say plainly never to rebut a finding you just fixed.
+
 ## [2.4.7]
 
 ### Changed

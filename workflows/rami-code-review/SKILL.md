@@ -75,6 +75,7 @@ If the caller did not supply `pr_url`, run Phase 1 to detect it from the current
    - **Rebut.** Only when you have one of the four valid reasons: false positive, framework guarantee, intentional design, duplicate. Call `rebut(pr_url, content_hash, author_reply="<one paragraph: reason + evidence>")` on the Rami MCP server.
      - `verdict: valid` → finding dismissed by Rami; move on.
      - `verdict: invalid` or `partial` → **must fix.** Push a code change that addresses Rami's specific concern, or stop the loop and report it under **Needs user decision**. Do **not** fall back to a GitHub thread reply, "Resolve conversation" click, `gh` command, or GitHub MCP call — Rami doesn't ingest any of those, so the thread will keep blocking `ready_for_review`.
+     - `status: review_required` → the PR head has moved past the commit Rami reviewed, so no judge ran and nothing was recorded. Call `get_review_results` (it reviews the new commit and reconciles fixes on its own), then re-triage; rebut again only if the finding is still a blocker. Never rebut a finding you have just fixed — pushing it is the whole fix.
 
    See the `rami-rebut-finding` workflow for the full rebuttal protocol.
 
@@ -84,7 +85,7 @@ If the caller did not supply `pr_url`, run Phase 1 to detect it from the current
    ```bash
    git add -A && git commit -m "fix: address rami review feedback" && git push
    ```
-   The next `get_review_results` starts the review of the new commit. Do not call `rebut`, `defer`, or `dismiss` between the push and that review completing: Rami refuses them with `review is not completed`. To wait without starting another review, poll `get_review_status`.
+   The next `get_review_results` starts the review of the new commit. Do not call `rebut`, `defer`, or `dismiss` between the push and that review completing: Rami refuses them with `review is not completed`, and a `rebut` sent before that review has even started is refused with `status: review_required`. To wait without starting another review, poll `get_review_status`.
 7. Continue the loop (back to step 1).
 
 ## Phase 3: Report
