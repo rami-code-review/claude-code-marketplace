@@ -69,22 +69,27 @@ If the caller did not supply `pr_url`, run Phase 1 to detect it from the current
 4. Record: `history.push({iteration, blockers})`.
 5. **Triage each blocker.** `get_review_results` returns one `blockers` array — the complete enumeration of everything preventing `ready_for_review`. Act on every entry. Each has a `kind`:
 
+   The response may also carry an `advisory` array: findings below the repository's blocking severity floor (Low by default). They are posted inline like blockers but never affect `ready_for_review`, the check-run, or approval. Fix an advisory finding when the fix is trivial and clearly right; otherwise leave it. Never rebut, defer, or dismiss an advisory finding to clear the PR — nothing is blocked by it.
+
    **`kind: "finding"`** — a Rami finding (with `severity`, `path`, `line`, `summary`, `content_hash`). Take findings in severity order — Blocking → High → Medium → Low — and for each decide **Fix** or **Rebut**, addressing it by its `content_hash`:
 
    - **Fix.** Call `get_fix_prompt(pr_url, content_hash)` on the Rami MCP server for the full detail (problem, risk, suggested fix), then apply the change with the Edit tool. This works for carried-over findings (`from_prior_review: true`) too.
    - **Rebut.** Only when you have one of the four valid reasons: false positive, framework guarantee, intentional design, duplicate. Call `rebut(pr_url, content_hash, author_reply="<one paragraph: reason + evidence>")` on the Rami MCP server.
      - `verdict: valid` → finding dismissed by Rami; move on.
      - `verdict: invalid` or `partial` → **must fix.** Push a code change that addresses Rami's specific concern, or stop the loop and report it under **Needs user decision**. Do **not** fall back to a GitHub thread reply, "Resolve conversation" click, `gh` command, or GitHub MCP call — Rami doesn't ingest any of those, so the thread will keep blocking `ready_for_review`.
+     - `status: review_required` → the PR head has moved past the commit Rami reviewed, so no judge ran and nothing was recorded. Call `get_review_results` (it reviews the new commit and reconciles fixes on its own), then re-triage; rebut again only if the finding is still a blocker. Never rebut a finding you have just fixed — pushing it is the whole fix.
 
    See the `rami-rebut-finding` workflow for the full rebuttal protocol.
 
+   **`kind: "publication_pending"`** — every finding and thread is settled and Rami is still publishing the approval and check-run that follow your last `rebut`, `dismiss`, or `defer`. This is the one blocker you never act on: wait `retry_after_seconds`, then go back to step 1 and call `get_review_results` again. Do **not** push, and do not rebut, dismiss, or defer anything meanwhile. It clears on its own, normally within two minutes; the iteration still counts toward `max_iterations`. An accepted `rebut` also returns `publication_pending: true` with the same `retry_after_seconds`.
+
    **`kind: "unresolved_thread"`** — a review thread on the PR (often a human reviewer's), not tracked as a Rami finding. Read it at its `url`. If it points at a code concern you can address, fix the code and push. If it needs a human answer or decision, report it under **Needs user decision** — do **not** unilaterally resolve or answer someone else's review thread. (`tracked_by_rami: false` confirms Rami cannot settle it for you.) This is the one blocker kind cleared on GitHub rather than through Rami's tools; readiness re-checks GitHub thread state on the next `get_review_results`.
 
-6. **Push.** After triaging the iteration's blockers:
+6. **Push.** After triaging the iteration's blockers, unless the only blocker was `publication_pending` (nothing changed, so there is nothing to push):
    ```bash
    git add -A && git commit -m "fix: address rami review feedback" && git push
    ```
-   The next `get_review_results` starts the review of the new commit. Do not call `rebut`, `defer`, or `dismiss` between the push and that review completing: Rami refuses them with `review is not completed`. To wait without starting another review, poll `get_review_status`.
+   The next `get_review_results` starts the review of the new commit. Do not call `rebut`, `defer`, or `dismiss` between the push and that review completing: Rami refuses them with `review is not completed`, and a `rebut` sent before that review has even started is refused with `status: review_required`. To wait without starting another review, poll `get_review_status`.
 7. Continue the loop (back to step 1).
 
 ## Phase 3: Report
@@ -106,6 +111,9 @@ Per-iteration:
 
 Rebuttals:
 - <finding summary or path:line>: [verdict] one-line evidence summary
+
+Advisory (omit when none):
+- <path:line>: <fixed | left as is>
 
 Needs user decision (omit when none):
 - <issue>: <what was tried and why the loop stopped> — options: fix by hand | rebut with new evidence | defer | dismiss
