@@ -80,11 +80,11 @@ If the caller did not supply `pr_url`, run Phase 1 to detect it from the current
 
    See the `rami-rebut-finding` workflow for the full rebuttal protocol.
 
-   **`kind: "publication_pending"`** — every finding and thread is settled and Rami is still publishing the approval and check-run that follow your last `rebut`, `dismiss`, or `defer`. This is the one blocker you never act on: wait `retry_after_seconds`, then go back to step 1 and call `get_review_results` again. Do **not** push, and do not rebut, dismiss, or defer anything meanwhile. It clears on its own, normally within two minutes; the iteration still counts toward `max_iterations`. An accepted `rebut` also returns `publication_pending: true` with the same `retry_after_seconds`.
+   **`kind: "publication_pending"`** — every finding and thread is settled and Rami is still publishing the approval and check-run that follow your last `rebut`, `dismiss`, or `defer`. This is the one blocker you never act on: wait `retry_after_seconds`, then call `get_review_results` again. Do **not** push, and do not rebut, dismiss, or defer anything meanwhile. It clears on its own, normally within two minutes and never later than five, and a poll that returns only this blocker does **not** count as an iteration — leave `iteration` unchanged and skip step 6. An accepted `rebut` also returns `publication_pending: true` with the same `retry_after_seconds`.
 
    **`kind: "unresolved_thread"`** — a review thread on the PR (often a human reviewer's), not tracked as a Rami finding. Read it at its `url`. If it points at a code concern you can address, fix the code and push. If it needs a human answer or decision, report it under **Needs user decision** — do **not** unilaterally resolve or answer someone else's review thread. (`tracked_by_rami: false` confirms Rami cannot settle it for you.) This is the one blocker kind cleared on GitHub rather than through Rami's tools; readiness re-checks GitHub thread state on the next `get_review_results`.
 
-6. **Push.** After triaging the iteration's blockers, unless the only blocker was `publication_pending` (nothing changed, so there is nothing to push):
+6. **Push.** After triaging the iteration's blockers:
    ```bash
    git add -A && git commit -m "fix: address rami review feedback" && git push
    ```
