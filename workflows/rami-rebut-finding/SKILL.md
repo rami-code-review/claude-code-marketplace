@@ -16,6 +16,7 @@ Use the Rami MCP `rebut` tool to challenge a finding. This is the only sanctione
 | The finding is correct and valid but out of scope for this PR | `defer` (acknowledges and stops re-raising) |
 | The user has explicitly told you to discard the finding without evaluation | `dismiss` (user-asked-only escape hatch) |
 | You don't have evidence for any of the four rebut reasons | Fix it. Do not rebut to avoid work. |
+| No finding is involved, but the user states a standing decision about the repository | `record_decision` (see the rami-record-decision skill) |
 
 ## Valid rebut reasons
 

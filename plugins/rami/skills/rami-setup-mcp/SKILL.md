@@ -99,7 +99,7 @@ approval_mode = "approve"
 approval_mode = "approve"
 ```
 
-Leave `rebut`, `defer`, and `dismiss` unlisted — they mutate review state, and Codex should keep asking before each of those.
+Leave `rebut`, `defer`, `dismiss`, and `record_decision` unlisted — they mutate review state, and Codex should keep asking before each of those.
 
 ### Other MCP clients
 
