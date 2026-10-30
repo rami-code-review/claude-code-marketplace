@@ -4,6 +4,14 @@ All notable changes to the Rami plugin are documented here. The version is the `
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.4.9]
+
+### Added
+
+- A `rami-record-decision` skill (`user-invocable: false`, triggered by natural-language intent) and workflow for the new `record_decision` MCP tool. When the user states a standing decision about the repository, such as an ADR requirement or an intentional design, the agent records it so future reviews respect it. The workflow tells the agent to rebut a finding instead of recording a decision to clear it, to anchor the decision to the files it governs, that a recorded decision stays unverified until another pull request repeats it or a teammate confirms it in the Rami console, and that active decisions shape reviews on Pro+ and Team+.
+- The rebuttal workflow points to `record_decision` for decisions that come up without a finding.
+- The setup workflow's Codex approval guidance leaves `record_decision` unlisted alongside `rebut`, `defer`, and `dismiss`, since it changes review state.
+
 ## [2.4.8]
 
 ### Added
